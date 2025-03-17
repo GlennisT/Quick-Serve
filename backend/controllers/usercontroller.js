@@ -1,4 +1,4 @@
-const User = require('../models/User'); // Assuming you have a User model for the database
+const User = require('../models/User'); // Sequelize User model
 const bcrypt = require('bcryptjs'); // For hashing passwords
 const jwt = require('jsonwebtoken'); // For generating JWT tokens
 const dotenv = require('dotenv');
@@ -10,7 +10,7 @@ const registerUser = async (req, res) => {
     const { name, email, password } = req.body;
 
     // Check if user already exists
-    const existingUser = await User.findOne({ email });
+    const existingUser = await User.findOne({ where: { email } });
     if (existingUser) {
       return res.status(400).json({ message: 'User already exists' });
     }
@@ -20,18 +20,15 @@ const registerUser = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, salt);
 
     // Create new user
-    const newUser = new User({
+    const newUser = await User.create({
       name,
       email,
       password: hashedPassword,
     });
 
-    // Save user to database
-    await newUser.save();
-
     // Generate JWT token
     const token = jwt.sign(
-      { userId: newUser._id },
+      { userId: newUser.id },
       process.env.JWT_SECRET,
       { expiresIn: '1h' }
     );
@@ -53,7 +50,7 @@ const loginUser = async (req, res) => {
     const { email, password } = req.body;
 
     // Check if user exists
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ where: { email } });
     if (!user) {
       return res.status(400).json({ message: 'Invalid credentials' });
     }
@@ -66,7 +63,7 @@ const loginUser = async (req, res) => {
 
     // Generate JWT token
     const token = jwt.sign(
-      { userId: user._id },
+      { userId: user.id },
       process.env.JWT_SECRET,
       { expiresIn: '1h' }
     );
@@ -85,7 +82,7 @@ const loginUser = async (req, res) => {
 // Get user profile (protected route)
 const getUserProfile = async (req, res) => {
   try {
-    const user = await User.findById(req.userId); // req.userId is set from the JWT token
+    const user = await User.findByPk(req.userId); // req.userId is set from the JWT token
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
@@ -105,7 +102,7 @@ const updateUserProfile = async (req, res) => {
   try {
     const { name, email } = req.body;
 
-    const user = await User.findById(req.userId); // req.userId is set from the JWT token
+    const user = await User.findByPk(req.userId); // req.userId is set from the JWT token
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
@@ -127,19 +124,26 @@ const updateUserProfile = async (req, res) => {
 
 // Delete user (protected route)
 const deleteUser = async (req, res) => {
-    try {
-      const { userId } = req.params; // assuming the userId is passed in the URL as a parameter
-  
-      // Find the user by ID and delete it
-      const user = await User.findByIdAndDelete(userId);
-  
-      if (!user) {
-        return res.status(404).json({ message: 'User not found' });
-      }
-  
-      return res.status(200).json({ message: 'User deleted successfully' });
-    } catch (error) {
-      return res.status(500).json({ message: 'Error deleting user', error });
+  try {
+    const { userId } = req.params; // assuming the userId is passed in the URL as a parameter
+
+    // Find the user by ID and delete it
+    const user = await User.destroy({ where: { id: userId } });
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
     }
-  };
-  
+
+    return res.status(200).json({ message: 'User deleted successfully' });
+  } catch (error) {
+    return res.status(500).json({ message: 'Error deleting user', error });
+  }
+};
+
+module.exports = {
+  registerUser,
+  loginUser,
+  getUserProfile,
+  updateUserProfile,
+  deleteUser
+};

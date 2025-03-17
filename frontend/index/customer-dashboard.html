@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Dashboard | Quick Serve</title>
+    <link rel="stylesheet" href="customer-dashboard.css">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="images/logo.png" alt="Quick Serve Logo">
+            <h1>Quick Serve</h1>
+        </div>
+        <nav>
+            <a href="#">Order History</a>
+            <a href="#">Profile</a>
+            <a href="#">Favorites</a>
+            <a href="/logout">Logout</a>
+        </nav>
+    </header>
+
+    <main class="dashboard-container">
+        <section class="order-history">
+            <h2>Order History</h2>
+            <div id="order-history-list">
+                </div>
+        </section>
+
+        <section class="profile-section">
+            <h2>Profile Settings</h2>
+            <div id="profile-details">
+                </div>
+            <button id="edit-profile">Edit Profile</button>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Quick Serve. All rights reserved.</p>
+    </footer>
+
+    <script src="customer-dashboard.js"></script>
+</body>
+</html>

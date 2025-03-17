@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Dashboard | Quick Serve</title>
+    <link rel="stylesheet" href="business-dashboard.css">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="images/logo.png" alt="Quick Serve Logo">
+            <h1>Quick Serve</h1>
+        </div>
+        <nav>
+            <a href="#">Orders</a>
+            <a href="#">Menu</a>
+            <a href="#">Reports</a>
+            <a href="#">Settings</a>
+            <a href="/logout">Logout</a>
+        </nav>
+    </header>
+
+    <main class="dashboard-container">
+        <section class="orders-section">
+            <h2>Recent Orders</h2>
+            <div id="orders-list">
+                </div>
+        </section>
+
+        <section class="menu-section">
+            <h2>Menu Overview</h2>
+            <div id="menu-list" class="menu-grid">
+                </div>
+            <button id="add-menu-item">Add New Item</button>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Quick Serve. All rights reserved.</p>
+    </footer>
+
+    <script src="business-dashboard.js"></script>
+</body>
+</html>

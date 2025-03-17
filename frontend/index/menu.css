@@ -1,0 +1,145 @@
+/* General reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    background-color: #f9f9f9;
+    color: #333;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* Header */
+header {
+    background-color: #ff6600; /* Orange */
+    padding: 20px;
+    color: white;
+}
+
+header .logo h1 {
+    font-size: 2em;
+}
+
+header nav ul {
+    list-style: none;
+    display: flex;
+    justify-content: flex-end;
+    gap: 20px;
+}
+
+header nav ul li a {
+    color: white;
+    font-size: 1.2em;
+}
+
+header nav ul li a.cta {
+    font-weight: bold;
+    background-color: #4B9F43; /* Jungle Green */
+    padding: 10px 20px;
+    border-radius: 5px;
+}
+
+/* Menu Section */
+.menu-container {
+    padding: 50px 20px;
+    text-align: center;
+}
+
+.menu-container h1 {
+    color: #4B9F43; /* Jungle Green */
+}
+
+.menu-items {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: 30px;
+}
+
+.menu-item {
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    text-align: center;
+}
+
+.menu-item img {
+    width: 100%;
+    border-radius: 5px;
+    margin-bottom: 15px;
+}
+
+.menu-item h2 {
+    color: #ff6600; /* Orange */
+    font-size: 1.5em;
+}
+
+.menu-item .item-description {
+    color: #777;
+    margin: 10px 0;
+}
+
+.menu-item .item-price {
+    color: #4B9F43; /* Jungle Green */
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.menu-item .add-to-cart {
+    background-color: #ff6600; /* Orange */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.menu-item .add-to-cart:hover {
+    background-color: #ff4500; /* Darker orange */
+}
+
+/* View Cart Button */
+.view-cart-btn {
+    background-color: #4B9F43; /* Jungle Green */
+    color: white;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.2em;
+    cursor: pointer;
+    margin-top: 30px;
+}
+
+.view-cart-btn:hover {
+    background-color: #3a7d31; /* Darker Jungle Green */
+}
+
+/* Footer */
+footer {
+    background-color: #ffcc99; /* Lighter orange */
+    padding: 20px;
+    text-align: center;
+    color: #333;
+}
+
+footer .footer-content p {
+    margin-bottom: 10px;
+}
+
+footer a {
+    color: #4B9F43; /* Jungle Green */
+    font-weight: bold;
+}
+
+footer a:hover {
+    color: #ff6600; /* Orange */
+}

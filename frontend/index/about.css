@@ -1,0 +1,63 @@
+/* General Body Styles */
+body {
+    font-family: 'Fraunces', serif;
+    background-color: #F6E1D3; /* Light Mocha */
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background-color: #D5A6BD; /* Blush */
+    text-align: center;
+    padding: 10px;
+}
+
+header .logo img {
+    width: 50px;
+    height: auto;
+}
+
+header h1 {
+    font-family: 'Astila', sans-serif;
+    font-size: 2.5rem;
+    color: white;
+}
+
+.about-container {
+    text-align: center;
+    padding: 40px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.about-container h2 {
+    font-size: 2rem;
+    color: #D5A6BD; /* Blush */
+}
+
+.about-container h3 {
+    font-size: 1.5rem;
+    color: #D5A6BD; /* Blush */
+}
+
+.about-container p {
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+}
+
+.about-container ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.about-container li {
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+}
+
+footer {
+    text-align: center;
+    background-color: #D5A6BD; /* Blush */
+    padding: 20px;
+    color: white;
+}

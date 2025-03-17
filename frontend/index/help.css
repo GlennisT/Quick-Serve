@@ -1,0 +1,90 @@
+body {
+    font-family: sans-serif;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background: linear-gradient(to right, rgba(0, 0, 0, 1) 10%, rgba(0, 0, 0, 0) 100%), url('images/food1.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    color: white;
+}
+
+header {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+header .logo {
+    display: flex;
+    align-items: center;
+}
+
+header .logo img {
+    height: 100px;
+    filter: opacity(0.7);
+    margin-right: 10px;
+}
+
+header .logo h1 {
+    margin: 0;
+    font-size: 2em;
+    color: #E0B0B0;
+}
+header a {
+    color: white;
+    text-decoration: none;
+    padding: 10px 20px;
+    border: 1px solid white;
+    border-radius: 5px;
+}
+
+.help-section {
+    width: 100%; /* Full-width section */
+    background-color: rgba(114, 110, 110, 0.541); /* Slightly transparent background */
+    padding: 50px 20px;
+    box-sizing: border-box; /* Include padding in width calculation */
+}
+
+.help-container {
+    width: 80%;
+    max-width: 800px;
+    margin: 0 auto; /* Center the container */
+    padding: 30px;
+    background-color: rgba(114, 110, 110, 0.541);
+    border-radius: 10px;
+}
+
+.help-container h2 {
+    text-align: center;
+    color: #E0B0B0;
+    margin-bottom: 20px;
+}
+
+.help-container h3 {
+    margin-top: 20px;
+}
+
+.help-container ul {
+    margin-left: 20px;
+}
+
+footer {
+    background-color: rgba(0, 0, 0, 0.8);
+    text-align: center;
+    padding: 20px;
+    width: 100%; /* Full-width footer */
+    box-sizing: border-box; /* Include padding in width calculation */
+}
+
+footer p {
+    margin: 0;
+}
+
+footer a {
+    color: white;
+    text-decoration: none;
+}
