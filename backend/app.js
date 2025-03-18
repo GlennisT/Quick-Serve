@@ -1,23 +1,51 @@
 const express = require('express');
-const bodyParser = require('body-parser');
-const sequelize = require('./db');
-const menuRoutes = require('./routes/menu');
-const cartRoutes = require('./routes/cart');
+const dotenv = require('dotenv');
+const corsMiddleware = require('./middleware/corsMiddleware');
+const loggingMiddleware = require('./middleware/loggingMiddleware');
+const errorMiddleware = require('./middleware/errorMiddleware');
+const customerRoutes = require('./routes/customerRoutes');
+const businessOwnerRoutes = require('./routes/businessOwnerRoutes');
+const restaurantRoutes = require('./routes/restaurantRoutes');
+const menuItemRoutes = require('./routes/menuItemRoutes');
+const orderRoutes = require('./routes/orderRoutes');
+const reviewRoutes = require('./routes/reviewRoutes');
+const addressRoutes = require('./routes/addressRoutes');
+const sequelize = require('./config/database'); // Import your database connection
+
+dotenv.config();
 
 const app = express();
-app.use(bodyParser.json());
+const port = process.env.PORT || 5000;
 
-// Use the routes
-app.use('/api/menu', menuRoutes);
-app.use('/api/cart', cartRoutes);
+// Apply Middleware
+app.use(corsMiddleware);
+app.use(loggingMiddleware);
+app.use(express.json());
 
-// Sync the database
-sequelize.sync().then(() => {
-  console.log('Database synchronized');
-});
+// Database Connection
+sequelize
+    .authenticate()
+    .then(() => {
+        console.log('Database connection has been established successfully.');
+        // sequelize.sync({ force: true }); // Use this to drop and recreate tables (development only)
+    })
+    .catch((err) => {
+        console.error('Unable to connect to the database:', err);
+    });
 
-// Start the server
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+// Use Routes
+app.use('/api/customers', customerRoutes);
+app.use('/api/business-owners', businessOwnerRoutes);
+app.use('/api/restaurants', restaurantRoutes);
+app.use('/api/menu-items', menuItemRoutes);
+app.use('/api/orders', orderRoutes);
+app.use('/api/reviews', reviewRoutes);
+app.use('/api/addresses', addressRoutes);
+
+// Error Handling Middleware (must be last)
+app.use(errorMiddleware);
+
+// Start the Server
+app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
 });

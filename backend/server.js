@@ -1,9 +1,11 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const mysql = require('mysql2');
 const bcrypt = require('bcrypt');
 const session = require('express-session');
 const path = require('path');
+const Customer = require('./models/customer'); // Import Customer model
+const BusinessOwner = require('./models/businessOwner'); // Import BusinessOwner model
+const sequelize = require('./config/database'); // Import sequelize object
 
 const app = express();
 const port = 3000;
@@ -11,56 +13,33 @@ const port = 3000;
 // Middleware
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(express.static(path.join(__dirname, 'public'))); // Serve static files
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Session Configuration
 app.use(session({
-    secret: 'your_secret_key', // Replace with a strong, random secret
+    secret: 'FAG',
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: false } // Set to true in production if using HTTPS
+    cookie: { secure: false }
 }));
-
-// Database Connection (Placeholder)
-const db = mysql.createConnection({
-    host: 'your_db_host', // Replace
-    user: 'your_db_user', // Replace
-    password: 'your_db_password', // Replace
-    database: 'your_db_name' // Replace
-});
-
-db.connect((err) => {
-    if (err) {
-        console.error('Database connection failed: ', err);
-        return;
-    }
-    console.log('Connected to database');
-});
 
 // Customer Login Route
 app.post('/customer-login', async (req, res) => {
     const { email, password } = req.body;
 
     try {
-        // Placeholder database query (Replace)
-        db.query('SELECT * FROM Customers WHERE email = ?', [email], async (err, results) => {
-            if (err) {
-                console.error('Database error:', err);
-                return res.status(500).send('Internal Server Error');
-            }
+        const customer = await Customer.findOne({ where: { email } });
 
-            if (results.length > 0) {
-                const user = results[0];
-                const passwordMatch = await bcrypt.compare(password, user.password); // Replace user.password
+        if (customer) {
+            const passwordMatch = await bcrypt.compare(password, customer.password);
 
-                if (passwordMatch) {
-                    req.session.userId = user.id; // Replace user.id
-                    req.session.userType = 'customer';
-                    return res.redirect('/customer-dashboard.html');
-                }
+            if (passwordMatch) {
+                req.session.userId = customer.id;
+                req.session.userType = 'customer';
+                return res.redirect('/customer-dashboard.html');
             }
-            res.status(401).send('Invalid credentials');
-        });
+        }
+        res.status(401).send('Invalid credentials');
     } catch (error) {
         console.error('Login error:', error);
         res.status(500).send('Internal Server Error');
@@ -68,29 +47,22 @@ app.post('/customer-login', async (req, res) => {
 });
 
 // Business Owner Login Route
-app.post('/business-login', async (req, res) => {
+app.post('/businessowner-login', async (req, res) => {
     const { email, password } = req.body;
 
     try {
-        // Placeholder database query (Replace)
-        db.query('SELECT * FROM BusinessOwners WHERE email = ?', [email], async (err, results) => {
-            if (err) {
-                console.error('Database error:', err);
-                return res.status(500).send('Internal Server Error');
-            }
+        const businessOwner = await BusinessOwner.findOne({ where: { email } });
 
-            if (results.length > 0) {
-                const user = results[0];
-                const passwordMatch = await bcrypt.compare(password, user.password); // Replace user.password
+        if (businessOwner) {
+            const passwordMatch = await bcrypt.compare(password, businessOwner.password);
 
-                if (passwordMatch) {
-                    req.session.userId = user.id; // Replace user.id
-                    req.session.userType = 'business';
-                    return res.redirect('/business-dashboard.html');
-                }
+            if (passwordMatch) {
+                req.session.userId = businessOwner.id;
+                req.session.userType = 'business';
+                return res.redirect('/business-dashboard.html');
             }
-            res.status(401).send('Invalid credentials');
-        });
+        }
+        res.status(401).send('Invalid credentials');
     } catch (error) {
         console.error('Login error:', error);
         res.status(500).send('Internal Server Error');
@@ -104,10 +76,13 @@ app.get('/logout', (req, res) => {
             console.error('Logout error:', err);
             return res.status(500).send('Internal Server Error');
         }
-        res.redirect('/'); // Redirect to homepage or login page
+        res.redirect('/');
     });
 });
 
-app.listen(port, () => {
-    console.log(`Server listening at http://localhost:${port}`);
+// Sync the database
+sequelize.sync().then(() => {
+    app.listen(port, () => {
+        console.log(`Server listening at http://localhost:${port}`);
+    });
 });
