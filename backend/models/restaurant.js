@@ -5,9 +5,9 @@ const Restaurant = sequelize.define('Restaurant', {
     name: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: true, // Ensures restaurant names are unique
+        unique: true,
         validate: {
-            len: [2, 100] // Prevents very short or excessively long names
+            len: [2, 100]
         }
     },
     description: {
@@ -18,59 +18,59 @@ const Restaurant = sequelize.define('Restaurant', {
         type: DataTypes.STRING,
         allowNull: true,
         validate: {
-            isUrl: true // Ensures it's a valid URL if provided
+            isUrl: true
         }
     },
     phoneNumber: {
         type: DataTypes.STRING,
         allowNull: true,
         validate: {
-            isNumeric: true,
-            len: [10, 15] // Ensures a reasonable phone number length
+            is: /^[\d+\s-]+$/, // Allows numbers, spaces, +, and -
+            len: [10, 15]
         }
     },
     ownerId: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-            model: 'BusinessOwners', // Reference to the BusinessOwners table
+            model: 'BusinessOwners',
             key: 'id'
         }
     },
     deliveryRange: {
-        type: DataTypes.INTEGER, // in kilometers
+        type: DataTypes.INTEGER,
         allowNull: true,
         validate: {
-            min: 1, // Ensures a minimum delivery range of 1km
-            max: 50 // Prevents unrealistic delivery distances
+            min: 1,
+            max: 50
         }
     },
     cuisineType: {
         type: DataTypes.STRING,
         allowNull: true,
         validate: {
-            len: [3, 50] // Ensures valid cuisine type names
+            len: [3, 50]
         }
     },
     openingHours: {
-        type: DataTypes.TIME, // Stores only time
+        type: DataTypes.STRING(10), // Allows flexible time formats
         allowNull: false
     },
     closingHours: {
-        type: DataTypes.TIME,
+        type: DataTypes.STRING(10),
         allowNull: false
     },
     status: {
         type: DataTypes.ENUM('open', 'closed', 'temporarily_closed'),
         allowNull: false,
-        defaultValue: 'open' // Helps track if a restaurant is accepting orders
+        defaultValue: 'open'
     },
     address: {
         type: DataTypes.STRING,
         allowNull: true
     },
     deletedAt: {
-        type: DataTypes.DATE // Enables soft delete feature
+        type: DataTypes.DATE
     }
 }, {
     indexes: [
@@ -78,7 +78,7 @@ const Restaurant = sequelize.define('Restaurant', {
         { fields: ['ownerId'] },
         { fields: ['cuisineType'] }
     ],
-    paranoid: true // Enables soft delete (records are hidden instead of permanently deleted)
+    paranoid: true
 });
 
 module.exports = Restaurant;

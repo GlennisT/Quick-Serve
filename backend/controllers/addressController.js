@@ -1,14 +1,14 @@
 const Address = require('../models/address');
-const { validationResult, body, param, query } = require('express-validator');
+const { validationResult, body, param } = require('express-validator');
 
 // Get All Addresses
-exports.getAddress = async (req, res) => {
+exports.getAddresses = async (req, res) => {
     try {
         const addresses = await Address.findAll();
         res.status(200).json(addresses);
     } catch (error) {
-        console.error('Error getting addresses:', error);
-        res.status(500).json({ message: 'Error getting addresses', error: error.message });
+        console.error('Error fetching addresses:', error);
+        res.status(500).json({ message: 'Error fetching addresses', error: error.message });
     }
 };
 
@@ -27,42 +27,32 @@ exports.getAddressById = [
             }
             res.status(200).json(address);
         } catch (error) {
-            console.error('Error getting address:', error);
-            res.status(500).json({ message: 'Error getting address', error: error.message });
+            console.error('Error fetching address:', error);
+            res.status(500).json({ message: 'Error fetching address', error: error.message });
         }
     }
 ];
 
 // Create Address
 exports.createAddress = [
+    body('customer_id').isInt().withMessage('Customer ID must be an integer'),
+    body('first_name').notEmpty().withMessage('First name is required'),
+    body('building_name').notEmpty().withMessage('Building name is required'),
+    body('house_number').notEmpty().withMessage('House number is required'),
     body('street').notEmpty().withMessage('Street is required'),
-    body('city').notEmpty().withMessage('City is required'),
-    body('county').notEmpty().withMessage('County is required'),
-    body('subCounty').notEmpty().withMessage('Sub-county is required'),
-    body('postalCode').optional(),
-    body('latitude').optional().isDecimal().withMessage('Latitude must be a decimal number'),
-    body('longitude').optional().isDecimal().withMessage('Longitude must be a decimal number'),
-    body('addressType').isIn(['customer', 'business']).withMessage('Invalid address type'),
-    body('addressableId').isInt().withMessage('Addressable ID must be an integer'),
-    body('addressableType').isIn(['Customer', 'BusinessOwner']).withMessage('Invalid addressable type'),
     async (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() });
         }
         try {
-            const { street, city, county, subCounty, postalCode, latitude, longitude, addressType, addressableId, addressableType } = req.body;
+            const { customer_id, first_name, building_name, house_number, street } = req.body;
             const address = await Address.create({
-                street,
-                city,
-                county,
-                subCounty,
-                postalCode,
-                latitude,
-                longitude,
-                addressType,
-                addressableId,
-                addressableType
+                customer_id,
+                first_name,
+                building_name,
+                house_number,
+                street
             });
             res.status(201).json({ message: 'Address created successfully', address });
         } catch (error) {
@@ -75,16 +65,11 @@ exports.createAddress = [
 // Update Address
 exports.updateAddress = [
     param('id').isInt().withMessage('ID must be an integer'),
+    body('customer_id').optional().isInt().withMessage('Customer ID must be an integer'),
+    body('first_name').optional(),
+    body('building_name').optional(),
+    body('house_number').optional(),
     body('street').optional(),
-    body('city').optional(),
-    body('county').optional(),
-    body('subCounty').optional(),
-    body('postalCode').optional(),
-    body('latitude').optional().isDecimal().withMessage('Latitude must be a decimal number'),
-    body('longitude').optional().isDecimal().withMessage('Longitude must be a decimal number'),
-    body('addressType').optional().isIn(['customer', 'business']).withMessage('Invalid address type'),
-    body('addressableId').optional().isInt().withMessage('Addressable ID must be an integer'),
-    body('addressableType').optional().isIn(['Customer', 'BusinessOwner']).withMessage('Invalid addressable type'),
     async (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -123,28 +108,6 @@ exports.deleteAddress = [
         } catch (error) {
             console.error('Error deleting address:', error);
             res.status(500).json({ message: 'Error deleting address', error: error.message });
-        }
-    }
-];
-
-// Get Addresses by Addressable ID and Type
-exports.getAddressesByAddressable = [
-    query('addressableId').isInt().withMessage('Addressable ID must be an integer'),
-    query('addressableType').isIn(['Customer', 'BusinessOwner']).withMessage('Invalid addressable type'),
-    async (req, res) => {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return res.status(400).json({ errors: errors.array() });
-        }
-        try {
-            const { addressableId, addressableType } = req.query;
-            const addresses = await Address.findAll({
-                where: { addressableId, addressableType }
-            });
-            res.status(200).json(addresses);
-        } catch (error) {
-            console.error('Error getting addresses:', error);
-            res.status(500).json({ message: 'Error getting addresses', error: error.message });
         }
     }
 ];

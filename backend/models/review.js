@@ -2,6 +2,27 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
 const Review = sequelize.define('Review', {
+    id: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true
+    },
+    customer_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+            model: 'Customers',
+            key: 'id'
+        }
+    },
+    restaurant_id: { // Updated to match database schema
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+            model: 'Restaurants',
+            key: 'id'
+        }
+    },
     rating: {
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -10,32 +31,16 @@ const Review = sequelize.define('Review', {
             max: 5
         }
     },
-    comment: {
+    review_text: { // Renamed from 'comment' to match database column
         type: DataTypes.TEXT,
         allowNull: true
     },
-    customerId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-            model: 'Customers', // Reference to the Customers table
-            key: 'id'
-        }
-    },
-    restaurantId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-            model: 'Restaurants', // Reference to the Restaurants table
-            key: 'id'
-        }
+    image: {
+        type: DataTypes.STRING, // Stores image filename
+        allowNull: true
     }
 }, {
-    // Model options
-    indexes: [
-        { fields: ['customerId', 'restaurantId'] }, // Index for efficient lookups
-        { fields: ['restaurantId', 'rating'] }
-    ]
+    timestamps: true // Automatically adds createdAt and updatedAt
 });
 
 module.exports = Review;

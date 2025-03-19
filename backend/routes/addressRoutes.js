@@ -9,7 +9,7 @@ const {
     deleteAddress,
     getAddressesByAddressable
 } = require('../controllers/addressController');
-const authMiddleware = require('../middleware/authMiddleware'); // Ensure you have authentication in place
+const authMiddleware = require('../middleware/authMiddleware');
 
 // Route to get all addresses
 router.get('/addresses', authMiddleware, getAddress);
@@ -17,7 +17,7 @@ router.get('/addresses', authMiddleware, getAddress);
 // Route to get a specific address by ID with validation
 router.get('/addresses/:id',
     authMiddleware,
-    param('id').isInt().withMessage('ID must be an integer'),
+    param('id').isUUID().withMessage('ID must be a valid UUID'),
     getAddressById
 );
 
@@ -25,10 +25,10 @@ router.get('/addresses/:id',
 router.post('/addresses',
     authMiddleware,
     [
-        body('street').notEmpty().withMessage('Street is required'),
+        body('street_address').notEmpty().withMessage('Street address is required'),
         body('city').notEmpty().withMessage('City is required'),
         body('country').notEmpty().withMessage('Country is required'),
-        body('postalCode').optional().isPostalCode('any').withMessage('Invalid postal code')
+        body('zipcode').optional().isPostalCode('any').withMessage('Invalid postal code')
     ],
     createAddress
 );
@@ -36,14 +36,14 @@ router.post('/addresses',
 // Route to update an address by ID using PATCH for partial updates
 router.patch('/addresses/:id',
     authMiddleware,
-    param('id').isInt().withMessage('ID must be an integer'),
+    param('id').isUUID().withMessage('ID must be a valid UUID'),
     updateAddress
 );
 
 // Route to delete an address by ID with validation
 router.delete('/addresses/:id',
     authMiddleware,
-    param('id').isInt().withMessage('ID must be an integer'),
+    param('id').isUUID().withMessage('ID must be a valid UUID'),
     deleteAddress
 );
 
@@ -51,7 +51,7 @@ router.delete('/addresses/:id',
 router.get('/addresses/search',
     authMiddleware,
     [
-        query('addressableId').isInt().withMessage('Addressable ID must be an integer'),
+        query('addressableId').isUUID().withMessage('Addressable ID must be a valid UUID'),
         query('addressableType').notEmpty().withMessage('Addressable type is required')
     ],
     getAddressesByAddressable

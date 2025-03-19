@@ -62,6 +62,17 @@ const BusinessOwner = sequelize.define('BusinessOwner', {
 BusinessOwner.beforeCreate(async (businessOwner) => {
     businessOwner.password = await bcrypt.hash(businessOwner.password, 10);
 });
+// Hash password before saving
+BusinessOwner.beforeCreate(async (businessOwner) => {
+    businessOwner.password = await bcrypt.hash(businessOwner.password, 10);
+});
+
+// Hash password before updating (if changed)
+BusinessOwner.beforeUpdate(async (businessOwner) => {
+    if (businessOwner.changed('password')) {
+        businessOwner.password = await bcrypt.hash(businessOwner.password, 10);
+    }
+});
 
 // Method to compare passwords (for login authentication)
 BusinessOwner.prototype.comparePassword = async function (enteredPassword) {

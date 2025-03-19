@@ -59,5 +59,10 @@ Customer.beforeCreate(async (customer) => {
 Customer.prototype.comparePassword = async function (enteredPassword) {
     return await bcrypt.compare(enteredPassword, this.password);
 };
+Customer.hasMany(require('./address'), { 
+    foreignKey: 'addressableId',
+    constraints: false,
+    scope: { addressableType: 'Customer' }
+});
 
 module.exports = Customer;

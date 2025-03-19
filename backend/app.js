@@ -45,6 +45,8 @@ app.use('/api/menu-items', menuItemRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/addresses', addressRoutes);
+app.use('/uploads/menu-items', express.static('uploads/menu-items'));
+
 
 // Error Handling Middleware (must be last)
 app.use(errorMiddleware);

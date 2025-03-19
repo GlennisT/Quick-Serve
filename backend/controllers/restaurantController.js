@@ -1,131 +1,113 @@
 const Restaurant = require('../models/restaurant');
-const Address = require('../models/address');
-const { validationResult } = require('express-validator');
+const { validationResult, body, param } = require('express-validator');
 
-// Centralized error handler
-const handleError = (res, error, message) => {
-    console.error(message, error);
-    res.status(500).json({ message, error: error.message });
-};
-
-// Create Restaurant
-exports.createRestaurant = async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
-
+// Get All Restaurants
+exports.getRestaurants = async (req, res) => {
     try {
-        const restaurant = await Restaurant.create({ ...req.body, ownerId: req.businessOwnerId });
-        res.status(201).json({ message: 'Restaurant created successfully', restaurant });
+        const restaurants = await Restaurant.findAll();
+        res.status(200).json(restaurants);
     } catch (error) {
-        handleError(res, error, 'Error creating restaurant');
+        console.error('Error fetching restaurants:', error);
+        res.status(500).json({ message: 'Error fetching restaurants', error: error.message });
     }
 };
 
 // Get Restaurant by ID
-exports.getRestaurantById = async (req, res) => {
-    try {
-        const restaurant = await Restaurant.findByPk(req.params.id);
-        if (!restaurant) return res.status(404).json({ message: 'Restaurant not found' });
-
-        res.status(200).json(restaurant);
-    } catch (error) {
-        handleError(res, error, 'Error fetching restaurant');
-    }
-};
-
-// Update Restaurant (Ensure Ownership)
-exports.updateRestaurant = async (req, res) => {
-    try {
-        const restaurant = await Restaurant.findOne({ where: { id: req.params.id, ownerId: req.businessOwnerId } });
-        if (!restaurant) return res.status(404).json({ message: 'Restaurant not found or unauthorized' });
-
-        await restaurant.update(req.body);
-        res.status(200).json({ message: 'Restaurant updated successfully', restaurant });
-    } catch (error) {
-        handleError(res, error, 'Error updating restaurant');
-    }
-};
-
-// Delete Restaurant (Ensure Ownership)
-exports.deleteRestaurant = async (req, res) => {
-    try {
-        const restaurant = await Restaurant.findOne({ where: { id: req.params.id, ownerId: req.businessOwnerId } });
-        if (!restaurant) return res.status(404).json({ message: 'Restaurant not found or unauthorized' });
-
-        await restaurant.destroy();
-        res.status(200).json({ message: 'Restaurant deleted successfully' });
-    } catch (error) {
-        handleError(res, error, 'Error deleting restaurant');
-    }
-};
-
-// Get Restaurants by Owner
-exports.getRestaurantsByOwner = async (req, res) => {
-    try {
-        const restaurants = await Restaurant.findAll({ where: { ownerId: req.businessOwnerId } });
-        res.status(200).json(restaurants);
-    } catch (error) {
-        handleError(res, error, 'Error fetching restaurants by owner');
-    }
-};
-
-// Add Restaurant Address
-exports.addRestaurantAddress = async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
-
-    try {
-        const restaurant = await Restaurant.findOne({ where: { id: req.params.restaurantId, ownerId: req.businessOwnerId } });
-        if (!restaurant) return res.status(404).json({ message: 'Restaurant not found or unauthorized' });
-
-        const address = await Address.create({
-            ...req.body,
-            addressType: 'restaurant',
-            addressableId: req.params.restaurantId,
-            addressableType: 'Restaurant'
-        });
-
-        res.status(201).json({ message: 'Restaurant address added successfully', address });
-    } catch (error) {
-        handleError(res, error, 'Error adding restaurant address');
-    }
-};
-
-// Update Restaurant Address
-exports.updateRestaurantAddress = async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
-
-    try {
-        const address = await Address.findByPk(req.params.addressId);
-        if (!address || address.addressableId !== req.params.restaurantId || address.addressableType !== 'Restaurant') {
-            return res.status(404).json({ message: 'Address not found or unauthorized' });
+exports.getRestaurantById = [
+    param('id').isInt().withMessage('Restaurant ID must be an integer'),
+    async (req, res) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
         }
-
-        const restaurant = await Restaurant.findOne({ where: { id: req.params.restaurantId, ownerId: req.businessOwnerId } });
-        if (!restaurant) return res.status(403).json({ message: 'Unauthorized to update this address' });
-
-        await address.update(req.body);
-        res.status(200).json({ message: 'Restaurant address updated successfully', address });
-    } catch (error) {
-        handleError(res, error, 'Error updating restaurant address');
-    }
-};
-
-// Delete Restaurant Address
-exports.deleteRestaurantAddress = async (req, res) => {
-    try {
-        const address = await Address.findByPk(req.params.addressId);
-        if (!address || address.addressableId !== req.params.restaurantId || address.addressableType !== 'Restaurant') {
-            return res.status(404).json({ message: 'Address not found or unauthorized' });
+        try {
+            const restaurant = await Restaurant.findByPk(req.params.id);
+            if (!restaurant) {
+                return res.status(404).json({ message: 'Restaurant not found' });
+            }
+            res.status(200).json(restaurant);
+        } catch (error) {
+            console.error('Error fetching restaurant:', error);
+            res.status(500).json({ message: 'Error fetching restaurant', error: error.message });
         }
-
-        const restaurant = await Restaurant.findOne({ where: { id: req.params.restaurantId, ownerId: req.businessOwnerId } });
-        if (!restaurant) return res.status(403).json({ message: 'Unauthorized to delete this address' });
-
-        await address.destroy();
-        res.status(200).json({ message: 'Restaurant address deleted successfully' });
-    } catch (error) {
-        handleError(res, error, 'Error deleting restaurant address');
     }
-};
+];
+
+// Create Restaurant
+exports.createRestaurant = [
+    body('business_owner_id').isInt().withMessage('Business owner ID is required and must be an integer'),
+    body('name').isString().notEmpty().withMessage('Restaurant name is required'),
+    body('location').isString().notEmpty().withMessage('Location is required'),
+    body('logo').optional().isString().withMessage('Logo must be a string (URL or file path)'),
+    async (req, res) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
+        try {
+            const { business_owner_id, name, location, logo = null } = req.body;
+
+            const restaurant = await Restaurant.create({
+                business_owner_id,
+                name,
+                location,
+                logo
+            });
+
+            res.status(201).json({ message: 'Restaurant created successfully', restaurant });
+        } catch (error) {
+            console.error('Error creating restaurant:', error);
+            res.status(500).json({ message: 'Error creating restaurant', error: error.message });
+        }
+    }
+];
+
+// Update Restaurant
+exports.updateRestaurant = [
+    param('id').isInt().withMessage('Restaurant ID must be an integer'),
+    body('name').optional().isString().notEmpty().withMessage('Restaurant name must be a valid string'),
+    body('location').optional().isString().notEmpty().withMessage('Location must be a valid string'),
+    body('logo').optional().isString().withMessage('Logo must be a string (URL or file path)'),
+    async (req, res) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
+        try {
+            const restaurant = await Restaurant.findByPk(req.params.id);
+            if (!restaurant) {
+                return res.status(404).json({ message: 'Restaurant not found' });
+            }
+
+            Object.assign(restaurant, req.body);
+            await restaurant.save();
+
+            res.status(200).json({ message: 'Restaurant updated successfully', restaurant });
+        } catch (error) {
+            console.error('Error updating restaurant:', error);
+            res.status(500).json({ message: 'Error updating restaurant', error: error.message });
+        }
+    }
+];
+
+// Delete Restaurant
+exports.deleteRestaurant = [
+    param('id').isInt().withMessage('Restaurant ID must be an integer'),
+    async (req, res) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
+        try {
+            const restaurant = await Restaurant.findByPk(req.params.id);
+            if (!restaurant) {
+                return res.status(404).json({ message: 'Restaurant not found' });
+            }
+            await restaurant.destroy();
+            res.status(200).json({ message: 'Restaurant deleted successfully' });
+        } catch (error) {
+            console.error('Error deleting restaurant:', error);
+            res.status(500).json({ message: 'Error deleting restaurant', error: error.message });
+        }
+    }
+];
