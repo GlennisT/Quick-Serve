@@ -1,5 +1,6 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
+const bcrypt = require('bcrypt');
 
 const Customer = sequelize.define('Customer', {
     email: {
@@ -26,7 +27,8 @@ const Customer = sequelize.define('Customer', {
         type: DataTypes.STRING,
         allowNull: true,
         validate: {
-            isNumeric: true
+            is: /^[0-9]{10}$/, // Ensures exactly 10 digits
+            msg: 'Phone number must be 10 digits long'
         }
     },
     nationalId: {
@@ -36,13 +38,26 @@ const Customer = sequelize.define('Customer', {
         validate: {
             isNumeric: true
         }
+    },
+    deletedAt: {
+        type: DataTypes.DATE // Enables soft delete feature
     }
 }, {
-    // Model options
     indexes: [
         { unique: true, fields: ['email'] },
         { unique: true, fields: ['nationalId'] }
-    ]
+    ],
+    paranoid: true // Enables soft delete (does not permanently delete records)
 });
+
+// Hash password before saving
+Customer.beforeCreate(async (customer) => {
+    customer.password = await bcrypt.hash(customer.password, 10);
+});
+
+// Method to compare passwords (for login authentication)
+Customer.prototype.comparePassword = async function (enteredPassword) {
+    return await bcrypt.compare(enteredPassword, this.password);
+};
 
 module.exports = Customer;

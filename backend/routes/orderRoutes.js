@@ -2,17 +2,18 @@ const express = require('express');
 const router = express.Router();
 const authMiddleware = require('../middleware/authMiddleware');
 const orderController = require('../controllers/orderController');
-const { validateOrderCreation, validateOrderStatusUpdate } = require('../validation/orderValidation');
-const validateRequest = require('../middleware/validationMiddleware');
 
-// Protected Routes (Authentication Required)
-router.use(authMiddleware); // Apply authMiddleware to all routes below
+// Apply authentication middleware to all order routes
+router.use(authMiddleware);
 
-router.post('/', validateOrderCreation, validateRequest, orderController.createOrder); // Only customers who are logged in can create an order.
-router.get('/customer', orderController.getOrdersByCustomer); // Only customers who are logged in can see their orders.
-router.get('/restaurant/:restaurantId', orderController.getOrdersByRestaurant); // Only restaurant owners who are logged in can see restaurant orders.
-router.put('/:id', validateOrderStatusUpdate, validateRequest, orderController.updateOrderStatus); // only restaurant owners who are logged in can update order status.
+// Customer routes
+router.post('/', orderController.createOrder); // Place a new order
+router.get('/customer', orderController.getCustomerOrders); // Get logged-in customer's orders
+router.get('/:id', orderController.getOrderById); // Get order details by ID
 
-// Public Routes (No Authentication Required)
-router.get('/:id', orderController.getOrderById); // Anyone can view an order by ID. This is useful for order tracking.
+// Restaurant routes
+router.get('/restaurant', orderController.getRestaurantOrders); // Get orders for logged-in restaurant owner
+router.put('/:id/status', orderController.updateOrderStatus); // Update order status
+router.delete('/:id', orderController.cancelOrder); // Cancel an order
+
 module.exports = router;

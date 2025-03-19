@@ -5,17 +5,24 @@ const OrderItem = sequelize.define('OrderItem', {
     quantity: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        defaultValue: 1
+        defaultValue: 1,
+        validate: {
+            min: 1 // Ensures at least one item is ordered
+        }
     },
     price: {
-        type: DataTypes.DECIMAL(10, 2), // 10 digits total, 2 decimal places
-        allowNull: false
+        type: DataTypes.DECIMAL(10, 2),
+        allowNull: false,
+        validate: {
+            isDecimal: true,
+            min: 0.01 // Prevents zero or negative pricing
+        }
     },
     orderId: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-            model: 'Orders', // Reference to the Orders table
+            model: 'Orders',
             key: 'id'
         }
     },
@@ -23,14 +30,13 @@ const OrderItem = sequelize.define('OrderItem', {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-            model: 'MenuItems', // Reference to the MenuItems table
+            model: 'MenuItems',
             key: 'id'
         }
     }
 }, {
-    // Model options
     indexes: [
-        { fields: ['orderId', 'menuItemId'] } // Index for efficient lookups
+        { fields: ['orderId', 'menuItemId'] }
     ]
 });
 

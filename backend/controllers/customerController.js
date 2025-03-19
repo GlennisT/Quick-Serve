@@ -5,138 +5,127 @@ const { validationResult, body, param } = require('express-validator');
 const Address = require('../models/address');
 const Order = require('../models/order');
 
+const SECRET_KEY = process.env.JWT_SECRET || 'your_secret_key'; // Ensure you store this in an environment variable
+
 // Customer Registration
-exports.createCustomer = [
-    // Validation rules...
+exports.registerCustomer = [
+    body('name').notEmpty().withMessage('Name is required'),
+    body('email').isEmail().withMessage('Valid email is required'),
+    body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters'),
     async (req, res) => {
-        // ... registration logic ...
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
+
+        try {
+            const { name, email, password } = req.body;
+            const existingCustomer = await Customer.findOne({ where: { email } });
+            if (existingCustomer) {
+                return res.status(400).json({ message: 'Email already exists' });
+            }
+
+            const hashedPassword = await bcrypt.hash(password, 10);
+            const customer = await Customer.create({ name, email, password: hashedPassword });
+            
+            res.status(201).json({ message: 'Registration successful', customer });
+        } catch (error) {
+            console.error('Registration error:', error);
+            res.status(500).json({ message: 'Error registering customer', error: error.message });
+        }
     }
 ];
 
 // Customer Login
 exports.loginCustomer = async (req, res) => {
-    // ... login logic ...
+    try {
+        const { email, password } = req.body;
+        const customer = await Customer.findOne({ where: { email } });
+        if (!customer) {
+            return res.status(401).json({ message: 'Invalid email or password' });
+        }
+
+        const isMatch = await bcrypt.compare(password, customer.password);
+        if (!isMatch) {
+            return res.status(401).json({ message: 'Invalid email or password' });
+        }
+
+        const token = jwt.sign({ id: customer.id }, SECRET_KEY, { expiresIn: '24h' });
+        res.cookie('token', token, { httpOnly: true });
+        res.status(200).json({ message: 'Login successful', token });
+    } catch (error) {
+        console.error('Login error:', error);
+        res.status(500).json({ message: 'Error logging in', error: error.message });
+    }
 };
 
 // Get Customer by ID
-exports.getCustomerById = [
-    // Validation rules...
-    async (req, res) => {
-        // ... get customer logic ...
+exports.getCustomerById = async (req, res) => {
+    try {
+        const customer = await Customer.findByPk(req.params.customerId);
+        if (!customer) {
+            return res.status(404).json({ message: 'Customer not found' });
+        }
+        res.status(200).json(customer);
+    } catch (error) {
+        console.error('Error retrieving customer:', error);
+        res.status(500).json({ message: 'Error retrieving customer', error: error.message });
     }
-];
+};
 
 // Update Customer Profile
 exports.updateCustomerProfile = async (req, res) => {
-    // ... update profile logic ...
+    try {
+        const { name, email, password } = req.body;
+        const customer = await Customer.findByPk(req.customerId);
+        if (!customer) {
+            return res.status(404).json({ message: 'Customer not found' });
+        }
+
+        if (email && email !== customer.email) {
+            const existingEmail = await Customer.findOne({ where: { email } });
+            if (existingEmail) {
+                return res.status(400).json({ message: 'Email already in use' });
+            }
+            customer.email = email;
+        }
+
+        customer.name = name || customer.name;
+        if (password) {
+            customer.password = await bcrypt.hash(password, 10);
+        }
+
+        await customer.save();
+        res.status(200).json({ message: 'Profile updated successfully', customer });
+    } catch (error) {
+        console.error('Error updating profile:', error);
+        res.status(500).json({ message: 'Error updating profile', error: error.message });
+    }
 };
 
 // Delete Customer
 exports.deleteCustomer = async (req, res) => {
-    // ... delete customer logic ...
-};
-
-// Get Customer Order History
-exports.getCustomerOrderHistory = async (req, res) => {
     try {
-        const orders = await Order.findAll({
-            where: { customerId: req.customerId }, // Get customer Id from JWT
-            include: ['Restaurant'] // Include restaurant info
-        });
-        res.status(200).json(orders);
-    } catch (error) {
-        console.error('Error getting order history:', error);
-        res.status(500).json({ message: 'Error getting order history', error: error.message });
-    }
-};
-
-// Add Customer Address
-exports.addCustomerAddress = async (req, res) => {
-    try {
-        const { street, city, county, subCounty, postalCode, latitude, longitude } = req.body;
-        const address = await Address.create({
-            street,
-            city,
-            county,
-            subCounty,
-            postalCode,
-            latitude,
-            longitude,
-            addressType: 'customer',
-            addressableId: req.customerId, // Get customer Id from JWT.
-            addressableType: 'Customer'
-        });
-        res.status(201).json({ message: 'Address added successfully', address });
-    } catch (error) {
-        console.error('Error adding address:', error);
-        res.status(500).json({ message: 'Error adding address', error: error.message });
-    }
-};
-
-// Get Customer Addresses
-exports.getCustomerAddresses = async (req, res) => {
-    try {
-        const addresses = await Address.findAll({
-            where: { addressableId: req.customerId, addressableType: 'Customer' } // Get customer Id from JWT.
-        });
-        res.status(200).json(addresses);
-    } catch (error) {
-        console.error('Error getting addresses:', error);
-        res.status(500).json({ message: 'Error getting addresses', error: error.message });
-    }
-};
-
-// Update Customer Address
-exports.updateCustomerAddress = async (req, res) => {
-    try {
-        const { street, city, county, subCounty, postalCode, latitude, longitude } = req.body;
-        const address = await Address.findByPk(req.params.addressId);
-
-        if (!address || address.addressableId !== req.customerId || address.addressableType !== 'Customer') {
-            return res.status(404).json({ message: 'Address not found or unauthorized' });
+        const customer = await Customer.findByPk(req.customerId);
+        if (!customer) {
+            return res.status(404).json({ message: 'Customer not found' });
         }
 
-        address.street = street || address.street;
-        address.city = city || address.city;
-        address.county = county || address.county;
-        address.subCounty = subCounty || address.subCounty;
-        address.postalCode = postalCode || address.postalCode;
-        address.latitude = latitude || address.latitude;
-        address.longitude = longitude || address.longitude;
-
-        await address.save();
-        res.status(200).json({ message: 'Address updated successfully', address });
+        await customer.destroy();
+        res.status(200).json({ message: 'Customer deleted successfully' });
     } catch (error) {
-        console.error('Error updating address:', error);
-        res.status(500).json({ message: 'Error updating address', error: error.message });
+        console.error('Error deleting customer:', error);
+        res.status(500).json({ message: 'Error deleting customer', error: error.message });
     }
 };
 
-// Delete Customer Address
-exports.deleteCustomerAddress = async (req, res) => {
-    try {
-        const address = await Address.findByPk(req.params.addressId);
-
-        if (!address || address.addressableId !== req.customerId || address.addressableType !== 'Customer') {
-            return res.status(404).json({ message: 'Address not found or unauthorized' });
-        }
-
-        await address.destroy();
-        res.status(200).json({ message: 'Address deleted successfully' });
-    } catch (error) {
-        console.error('Error deleting address:', error);
-        res.status(500).json({ message: 'Error deleting address', error: error.message });
-    }
-};
-
-// customerController.js
+// Customer Logout
 exports.logout = (req, res) => {
     try {
-      // Clear the JWT token or session
-      res.clearCookie('token'); // Clear the token cookie
-      res.status(200).json({ message: 'Logout successful' });
+        res.clearCookie('token');
+        res.status(200).json({ message: 'Logout successful' });
     } catch (error) {
-      console.error('Logout error:', error);
-      res.status(500).json({ message: 'Logout failed', error: error.message });
+        console.error('Logout error:', error);
+        res.status(500).json({ message: 'Logout failed', error: error.message });
     }
-  };
+};

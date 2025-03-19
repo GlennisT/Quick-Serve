@@ -1,5 +1,6 @@
-const morgan = require('morgan');
+const logger = (req, res, next) => {
+    console.log(`[${new Date().toISOString()}] ${req.method} ${req.originalUrl}`);
+    next();
+};
 
-const loggingMiddleware = morgan('combined'); // 'combined' format is a common choice
-
-module.exports = loggingMiddleware;
+module.exports = logger;

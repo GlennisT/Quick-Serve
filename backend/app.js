@@ -1,5 +1,9 @@
 const express = require('express');
 const dotenv = require('dotenv');
+dotenv.config(); // Load environment variables early
+
+const cors = require('cors'); // Security and cross-origin requests
+const helmet = require('helmet'); // Adds security headers
 const corsMiddleware = require('./middleware/corsMiddleware');
 const loggingMiddleware = require('./middleware/loggingMiddleware');
 const errorMiddleware = require('./middleware/errorMiddleware');
@@ -10,15 +14,14 @@ const menuItemRoutes = require('./routes/menuItemRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');
 const addressRoutes = require('./routes/addressRoutes');
-const sequelize = require('./config/database'); // Import your database connection
-
-dotenv.config();
+const sequelize = require('./config/database'); // Import database connection
 
 const app = express();
 const port = process.env.PORT || 5000;
 
-// Apply Middleware
-app.use(corsMiddleware);
+// Security Middleware
+app.use(helmet());
+app.use(cors()); // Use corsMiddleware if you have custom rules
 app.use(loggingMiddleware);
 app.use(express.json());
 
@@ -26,11 +29,12 @@ app.use(express.json());
 sequelize
     .authenticate()
     .then(() => {
-        console.log('Database connection has been established successfully.');
-        // sequelize.sync({ force: true }); // Use this to drop and recreate tables (development only)
+        console.log('✅ Database connected successfully.');
+        // sequelize.sync({ force: true }); // Uncomment for dev mode (drops and recreates tables)
     })
     .catch((err) => {
-        console.error('Unable to connect to the database:', err);
+        console.error('❌ Database connection failed:', err);
+        process.exit(1); // Exit process if DB connection fails
     });
 
 // Use Routes
@@ -47,5 +51,11 @@ app.use(errorMiddleware);
 
 // Start the Server
 app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
+    console.log(`🚀 Server running on port ${port}`);
+});
+
+// Graceful Shutdown for unhandled rejections
+process.on('unhandledRejection', (err) => {
+    console.error('❌ Unhandled Rejection:', err);
+    process.exit(1);
 });

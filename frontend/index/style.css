@@ -4,10 +4,10 @@ body {
     display: flex;
     flex-direction: column;
     height: 100vh;
-    background: linear-gradient(to right, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 100%), url('images/food7.jpeg'); 
-    background-size: cover; /* Cover the entire body */
-    background-repeat: no-repeat; /* Prevent image repetition */
-    background-position: center; /* Center the image */
+    background: linear-gradient(to right, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 100%), url('images/food7.jpeg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
 }
 
 header {
@@ -15,7 +15,7 @@ header {
     justify-content: space-between;
     align-items: center;
     padding: 20px;
-    background-color: transparent; /* Make header background transparent */
+    background-color: transparent;
     color: white;
 }
 
@@ -23,16 +23,16 @@ header .logo img {
     height: 150px;
     filter: opacity(0.7);
 }
+
 #register-button {
     background-color: black;
     color: white;
     padding: 10px 20px;
     border: none;
-    border-radius: 20px; /* Rounded edges */
+    border-radius: 20px;
     cursor: pointer;
-    font-size: 16px; /* Adjust font size as needed */
+    font-size: 16px;
 }
-
 
 header nav ul li {
     margin: 0;
@@ -61,16 +61,37 @@ main.container {
 
 .form-section h2 {
     margin-bottom: 30px;
+    color: #E0B0B0;
 }
 
-.form-section input {
-    width: 300px;
-    padding: 10px;
+/* Updated Input Styles */
+.input-row {
+    display: flex;
+    justify-content: space-between;
     margin-bottom: 15px;
+    width: 300px; /* Match the width of the original inputs */
+}
+
+.input-row li {
+    width: 48%; /* Adjust to fit two inputs per row */
+    list-style: none; /* Remove list style */
+    margin-right: 50px;
+}
+
+.input-row input {
+    width: 100%; /* Make inputs fill their list item */
+    padding: 10px;
     border: 1px solid #555;
     border-radius: 5px;
     background-color: #333;
     color: white;
+}
+
+/* Centered Button Styles */
+.button-row {
+    text-align: center;
+    margin-top: 20px;
+    width: 300px; /* Match the width of the original inputs */
 }
 
 .form-section button {
@@ -80,7 +101,7 @@ main.container {
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    width: 300px;
+    width: 100%; /* Make button fill its row */
 }
 
 .form-section p {
@@ -90,11 +111,6 @@ main.container {
 .form-section p a {
     color: #007bff;
 }
-.h2 {
-    color: pink;
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
-}
-/* ... (Your existing CSS) ... */
 
 .social-icons {
     margin-top: 20px;
@@ -102,24 +118,25 @@ main.container {
 
 .google-icon {
     font-size: 24px;
-    color: white; /* Or any color you prefer */
+    color: white;
 }
 
 footer {
     text-align: center;
     padding: 20px;
-    background-color: transparent; /* Or any background you prefer */
-    color: white; /* Or any color you prefer */
+    background-color: transparent;
+    color: white;
 }
 
 footer a {
-    color: white; /* Or any color you prefer */
+    color: white;
     text-decoration: none;
     margin: 0 10px;
 }
+
 footer p {
     margin: 0;
 }
-.form-section h2{
-    color: #E0B0B0;
+.input-row li:last-child {
+    margin-right: 0;
 }

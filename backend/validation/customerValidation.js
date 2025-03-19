@@ -1,47 +1,69 @@
 const { body, param } = require('express-validator');
 
 exports.validateCustomerRegistration = [
-    body('email').isEmail().normalizeEmail().withMessage('Invalid email address'),
-    body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters long'),
-    body('firstName').notEmpty().trim().withMessage('First name is required'),
-    body('lastName').notEmpty().trim().withMessage('Last name is required'),
+    body('email')
+        .isEmail()
+        .normalizeEmail()
+        .withMessage('Invalid email address'),
+
+    body('password')
+        .isLength({ min: 6 })
+        .withMessage('Password must be at least 6 characters long'),
+
+    body('firstName')
+        .notEmpty().withMessage('First name is required')
+        .trim()
+        .isAlpha('en-US', { ignore: ' ' }).withMessage('First name must contain only letters'),
+
+    body('lastName')
+        .notEmpty().withMessage('Last name is required')
+        .trim()
+        .isAlpha('en-US', { ignore: ' ' }).withMessage('Last name must contain only letters'),
+
     body('phoneNumber')
         .optional()
         .isMobilePhone('any')
         .withMessage('Invalid phone number'),
+
     body('nationalId')
         .optional()
-        .isNumeric()
-        .withMessage('National ID must be numeric'),
+        .trim()
+        .isInt({ min: 1 }).withMessage('National ID must be a positive integer'),
 ];
 
 exports.validateCustomerUpdate = [
-    param('id').isInt().withMessage('Customer ID must be an integer'),
+    param('id')
+        .isInt({ min: 1 })
+        .withMessage('Customer ID must be a positive integer'),
+
     body('email')
         .optional()
         .isEmail()
         .normalizeEmail()
         .withMessage('Invalid email address'),
+
     body('password')
         .optional()
         .isLength({ min: 6 })
         .withMessage('Password must be at least 6 characters long'),
+
     body('firstName')
         .optional()
-        .notEmpty()
         .trim()
-        .withMessage('First name cannot be empty'),
+        .isAlpha('en-US', { ignore: ' ' }).withMessage('First name must contain only letters'),
+
     body('lastName')
         .optional()
-        .notEmpty()
         .trim()
-        .withMessage('Last name cannot be empty'),
+        .isAlpha('en-US', { ignore: ' ' }).withMessage('Last name must contain only letters'),
+
     body('phoneNumber')
         .optional()
         .isMobilePhone('any')
         .withMessage('Invalid phone number'),
+
     body('nationalId')
         .optional()
-        .isNumeric()
-        .withMessage('National ID must be numeric'),
+        .trim()
+        .isInt({ min: 1 }).withMessage('National ID must be a positive integer'),
 ];
