@@ -1,19 +1,11 @@
 const Customer = require('../models/customer');
 const { validationResult, body, param } = require('express-validator');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
-// Get All Customers
-exports.getCustomers = async (req, res) => {
-    try {
-        const customers = await Customer.findAll();
-        res.status(200).json(customers);
-    } catch (error) {
-        console.error('Error fetching customers:', error);
-        res.status(500).json({ message: 'Error fetching customers', error: error.message });
-    }
-};
 
 // Get Customer by ID
-exports.getCustomerById = [
+exports.getCustomerProfile = [
     param('id').isInt().withMessage('ID must be an integer'),
     async (req, res) => {
         const errors = validationResult(req);
@@ -33,15 +25,12 @@ exports.getCustomerById = [
     }
 ];
 
-// Create Customer
-exports.createCustomer = [
+// Register Customer
+exports.registerCustomer = [
     body('first_name').notEmpty().withMessage('First name is required'),
     body('last_name').notEmpty().withMessage('Last name is required'),
     body('email').isEmail().withMessage('Valid email is required'),
-    body('password').notEmpty().withMessage('Password is required'),
-    body('street').optional(),
-    body('building').optional(),
-    body('house_number').optional(),
+    body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters'),
     async (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -49,15 +38,18 @@ exports.createCustomer = [
         }
         try {
             const { first_name, last_name, email, password, street, building, house_number } = req.body;
+            const hashedPassword = await bcrypt.hash(password, 10);
+
             const customer = await Customer.create({
                 first_name,
                 last_name,
                 email,
-                password,
-                street: street || null,
-                building: building || null,
-                house_number: house_number || null
+                password: hashedPassword,
+                street,
+                building,
+                house_number
             });
+
             res.status(201).json({ message: 'Customer created successfully', customer });
         } catch (error) {
             console.error('Error creating customer:', error);
@@ -66,16 +58,42 @@ exports.createCustomer = [
     }
 ];
 
-// Update Customer
-exports.updateCustomer = [
+// Customer Login
+exports.loginCustomer = [
+    body('email').isEmail().withMessage('Valid email is required'),
+    body('password').notEmpty().withMessage('Password is required'),
+    async (req, res) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
+        try {
+            const { email, password } = req.body;
+            const customer = await Customer.findOne({ where: { email } });
+
+            if (!customer) {
+                return res.status(401).json({ message: 'Invalid email or password' });
+            }
+
+            const isMatch = await bcrypt.compare(password, customer.password);
+            if (!isMatch) {
+                return res.status(401).json({ message: 'Invalid email or password' });
+            }
+
+            const token = jwt.sign({ id: customer.id, email: customer.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+            res.status(200).json({ message: 'Login successful', token });
+        } catch (error) {
+            console.error('Error logging in:', error);
+            res.status(500).json({ message: 'Error logging in', error: error.message });
+        }
+    }
+];
+
+// Update Customer Profile
+exports.updateCustomerProfile = [
     param('id').isInt().withMessage('ID must be an integer'),
-    body('first_name').optional(),
-    body('last_name').optional(),
     body('email').optional().isEmail().withMessage('Valid email is required'),
-    body('password').optional(),
-    body('street').optional(),
-    body('building').optional(),
-    body('house_number').optional(),
     async (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -86,8 +104,10 @@ exports.updateCustomer = [
             if (!customer) {
                 return res.status(404).json({ message: 'Customer not found' });
             }
+
             Object.assign(customer, req.body);
             await customer.save();
+
             res.status(200).json({ message: 'Customer updated successfully', customer });
         } catch (error) {
             console.error('Error updating customer:', error);
@@ -109,6 +129,7 @@ exports.deleteCustomer = [
             if (!customer) {
                 return res.status(404).json({ message: 'Customer not found' });
             }
+
             await customer.destroy();
             res.status(200).json({ message: 'Customer deleted successfully' });
         } catch (error) {

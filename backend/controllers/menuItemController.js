@@ -35,11 +35,11 @@ exports.getMenuItemById = [
 
 // Create Menu Item
 exports.createMenuItem = [
-    body('business_id').notEmpty().withMessage('Business ID is required'),
+    body('business_id').isString().withMessage('Business ID must be a string'),
     body('item_name').notEmpty().withMessage('Item name is required'),
     body('price').isFloat({ gt: 0 }).withMessage('Price must be a positive number'),
-    body('image').optional(),
-    body('available_stock').optional().isInt({ min: 0 }).withMessage('Available stock must be a non-negative integer'),
+    body('image').optional().isString().withMessage('Image must be a valid URL or file path'),
+    body('available_stock').optional().isInt({ min: 0 }).withMessage('Stock must be a non-negative integer'),
     async (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -65,11 +65,11 @@ exports.createMenuItem = [
 // Update Menu Item
 exports.updateMenuItem = [
     param('id').isInt().withMessage('ID must be an integer'),
-    body('business_id').optional(),
-    body('item_name').optional(),
+    body('business_id').optional().isString().withMessage('Business ID must be a string'),
+    body('item_name').optional().isString().withMessage('Item name must be a string'),
     body('price').optional().isFloat({ gt: 0 }).withMessage('Price must be a positive number'),
-    body('image').optional(),
-    body('available_stock').optional().isInt({ min: 0 }).withMessage('Available stock must be a non-negative integer'),
+    body('image').optional().isString().withMessage('Image must be a valid URL or file path'),
+    body('available_stock').optional().isInt({ min: 0 }).withMessage('Stock must be a non-negative integer'),
     async (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -80,8 +80,7 @@ exports.updateMenuItem = [
             if (!menuItem) {
                 return res.status(404).json({ message: 'Menu item not found' });
             }
-            Object.assign(menuItem, req.body);
-            await menuItem.save();
+            await menuItem.update(req.body);
             res.status(200).json({ message: 'Menu item updated successfully', menuItem });
         } catch (error) {
             console.error('Error updating menu item:', error);

@@ -1,32 +1,48 @@
-const { body, param } = require('express-validator');
+const Joi = require("joi");
 
-exports.validateReviewCreation = [
-    body('customerId')
-        .isInt({ min: 1 }).withMessage('Customer ID must be a positive integer'),
+// Define the validation schema
+const reviewSchema = Joi.object({
+    customer_id: Joi.number().integer().min(1).required()
+        .messages({
+            "number.base": "Customer ID must be a number.",
+            "number.integer": "Customer ID must be an integer.",
+            "number.min": "Customer ID must be a positive number.",
+            "any.required": "Customer ID is required."
+        }),
 
-    body('restaurantId')
-        .isInt({ min: 1 }).withMessage('Restaurant ID must be a positive integer'),
+    restaurant_id: Joi.number().integer().min(1).required()
+        .messages({
+            "number.base": "Restaurant ID must be a number.",
+            "number.integer": "Restaurant ID must be an integer.",
+            "number.min": "Restaurant ID must be a positive number.",
+            "any.required": "Restaurant ID is required."
+        }),
 
-    body('rating')
-        .isInt({ min: 1, max: 5 }).withMessage('Rating must be an integer between 1 and 5'),
+    rating: Joi.number().integer().min(1).max(5).required()
+        .messages({
+            "number.base": "Rating must be a number.",
+            "number.integer": "Rating must be an integer.",
+            "number.min": "Rating must be at least 1.",
+            "number.max": "Rating cannot be more than 5.",
+            "any.required": "Rating is required."
+        }),
 
-    body('comment')
-        .optional()
-        .trim()
-        .isLength({ min: 1 }).withMessage('Comment must be a valid string'),
-];
+    review_text: Joi.string().max(1000).optional()
+        .messages({
+            "string.base": "Review text must be a string.",
+            "string.max": "Review text cannot exceed 1000 characters."
+        }),
 
-exports.validateReviewUpdate = [
-    param('id')
-        .isInt({ min: 1 }).withMessage('Review ID must be a positive integer'),
+    image: Joi.string().uri().optional()
+        .messages({
+            "string.uri": "Image must be a valid URL."
+        })
+});
 
-    body('rating')
-        .optional()
-        .isInt({ min: 1, max: 5 })
-        .withMessage('Rating must be an integer between 1 and 5'),
+// Function to validate review data
+const validateReview = (data) => {
+    const { error } = reviewSchema.validate(data, { abortEarly: false });
+    return { error };
+};
 
-    body('comment')
-        .optional()
-        .trim()
-        .isLength({ min: 1 }).withMessage('Comment must be a valid string'),
-];
+module.exports = validateReview;

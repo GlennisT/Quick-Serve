@@ -1,69 +1,52 @@
-const { body, param } = require('express-validator');
+const validateBusinessOwner = (owner) => {
+    const errors = {};
 
-exports.validateBusinessOwnerRegistration = [
-    body('email')
-        .isEmail()
-        .normalizeEmail()
-        .withMessage('Invalid email address'),
+    if (!owner.first_name || owner.first_name.trim().length === 0) {
+        errors.first_name = "First name is required.";
+    } else if (owner.first_name.length > 255) {
+        errors.first_name = "First name must not exceed 255 characters.";
+    }
 
-    body('password')
-        .isLength({ min: 6 })
-        .withMessage('Password must be at least 6 characters long'),
+    if (!owner.last_name || owner.last_name.trim().length === 0) {
+        errors.last_name = "Last name is required.";
+    } else if (owner.last_name.length > 255) {
+        errors.last_name = "Last name must not exceed 255 characters.";
+    }
 
-    body('firstName')
-        .notEmpty().withMessage('First name is required')
-        .trim()
-        .isAlpha('en-US', { ignore: ' ' }).withMessage('First name must contain only letters'),
+    if (!owner.business_name || owner.business_name.trim().length === 0) {
+        errors.business_name = "Business name is required.";
+    } else if (owner.business_name.length > 255) {
+        errors.business_name = "Business name must not exceed 255 characters.";
+    }
 
-    body('lastName')
-        .notEmpty().withMessage('Last name is required')
-        .trim()
-        .isAlpha('en-US', { ignore: ' ' }).withMessage('Last name must contain only letters'),
+    if (!owner.business_location || owner.business_location.trim().length === 0) {
+        errors.business_location = "Business location is required.";
+    } else if (owner.business_location.length > 255) {
+        errors.business_location = "Business location must not exceed 255 characters.";
+    }
 
-    body('phoneNumber')
-        .optional()
-        .isMobilePhone('any')
-        .withMessage('Invalid phone number'),
+    if (!owner.email || owner.email.trim().length === 0) {
+        errors.email = "Email is required.";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(owner.email)) {
+        errors.email = "Invalid email format.";
+    }
 
-    body('nationalId')
-        .optional()
-        .trim()
-        .isInt({ min: 1 }).withMessage('National ID must be a positive integer'),
-];
+    if (!owner.password || owner.password.trim().length === 0) {
+        errors.password = "Password is required.";
+    } else if (owner.password.length < 8) {
+        errors.password = "Password must be at least 8 characters long.";
+    }
 
-exports.validateBusinessOwnerUpdate = [
-    param('id')
-        .isInt({ min: 1 })
-        .withMessage('Business owner ID must be a positive integer'),
+    if (!owner.business_id || owner.business_id.trim().length === 0) {
+        errors.business_id = "Business ID is required.";
+    } else if (owner.business_id.length > 10) {
+        errors.business_id = "Business ID must not exceed 10 characters.";
+    }
 
-    body('email')
-        .optional()
-        .isEmail()
-        .normalizeEmail()
-        .withMessage('Invalid email address'),
+    return {
+        isValid: Object.keys(errors).length === 0,
+        errors,
+    };
+};
 
-    body('password')
-        .optional()
-        .isLength({ min: 6 })
-        .withMessage('Password must be at least 6 characters long'),
-
-    body('firstName')
-        .optional()
-        .trim()
-        .isAlpha('en-US', { ignore: ' ' }).withMessage('First name must contain only letters'),
-
-    body('lastName')
-        .optional()
-        .trim()
-        .isAlpha('en-US', { ignore: ' ' }).withMessage('Last name must contain only letters'),
-
-    body('phoneNumber')
-        .optional()
-        .isMobilePhone('any')
-        .withMessage('Invalid phone number'),
-
-    body('nationalId')
-        .optional()
-        .trim()
-        .isInt({ min: 1 }).withMessage('National ID must be a positive integer'),
-];
+module.exports = validateBusinessOwner;

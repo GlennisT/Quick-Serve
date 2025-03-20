@@ -1,45 +1,46 @@
+// models/cart.js
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
-const Product = require('./product'); // Assuming you have a Product model
+const Customer = require('./customer');
+const Restaurant = require('./restaurant');
+const MenuItem = require('./menuItem');
 
 const Cart = sequelize.define('Cart', {
-    customerId: {
+    id: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true
+    },
+    customer_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
     },
-    businessOwnerId: {  // Each cart belongs to a business
+    restaurant_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
     },
-    totalPrice: {
-        type: DataTypes.FLOAT,
+    menu_item_id: {
+        type: DataTypes.INTEGER,
         allowNull: false,
-        defaultValue: 0, // Ensures initial price is 0
     },
-}, {
-    hooks: {
-        beforeSave: async (cart) => {
-            // Fetch all cart items linked to this cart
-            const cartItems = await cart.getCartItems();
-            let total = 0;
-
-            for (const item of cartItems) {
-                const product = await Product.findByPk(item.productId);
-                if (product) {
-                    total += product.price * item.quantity;
-                }
-            }
-
-            cart.totalPrice = total;
-        }
+    quantity: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 1,
+    },
+    total_price: {
+        type: DataTypes.DECIMAL(10,2),
+        allowNull: false,
     }
+}, {
+    timestamps: true,
+    createdAt: 'created_at',
+    updatedAt: false
 });
 
 // Associations
-Cart.associate = (models) => {
-    Cart.belongsTo(models.Customer, { foreignKey: 'customerId' });
-    Cart.belongsTo(models.BusinessOwner, { foreignKey: 'businessOwnerId' });
-    Cart.hasMany(models.CartItem, { foreignKey: 'cartId', onDelete: 'CASCADE' });
-};
+Cart.belongsTo(Customer, { foreignKey: 'customer_id' });
+Cart.belongsTo(Restaurant, { foreignKey: 'restaurant_id' });
+Cart.belongsTo(MenuItem, { foreignKey: 'menu_item_id' });
 
 module.exports = Cart;

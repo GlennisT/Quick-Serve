@@ -1,69 +1,40 @@
-const { body, param } = require('express-validator');
+const validateCustomer = (customer) => {
+    const errors = {};
 
-exports.validateCustomerRegistration = [
-    body('email')
-        .isEmail()
-        .normalizeEmail()
-        .withMessage('Invalid email address'),
+    if (!customer.first_name || typeof customer.first_name !== "string" || customer.first_name.trim().length === 0) {
+        errors.first_name = "First name is required and must be a valid string.";
+    }
 
-    body('password')
-        .isLength({ min: 6 })
-        .withMessage('Password must be at least 6 characters long'),
+    if (!customer.last_name || typeof customer.last_name !== "string" || customer.last_name.trim().length === 0) {
+        errors.last_name = "Last name is required and must be a valid string.";
+    }
 
-    body('firstName')
-        .notEmpty().withMessage('First name is required')
-        .trim()
-        .isAlpha('en-US', { ignore: ' ' }).withMessage('First name must contain only letters'),
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!customer.email || !emailRegex.test(customer.email)) {
+        errors.email = "A valid email address is required.";
+    }
 
-    body('lastName')
-        .notEmpty().withMessage('Last name is required')
-        .trim()
-        .isAlpha('en-US', { ignore: ' ' }).withMessage('Last name must contain only letters'),
+    if (!customer.password || customer.password.length < 6) {
+        errors.password = "Password is required and must be at least 6 characters long.";
+    }
 
-    body('phoneNumber')
-        .optional()
-        .isMobilePhone('any')
-        .withMessage('Invalid phone number'),
+    // Optional fields validation
+    if (customer.street && typeof customer.street !== "string") {
+        errors.street = "Street must be a valid string.";
+    }
 
-    body('nationalId')
-        .optional()
-        .trim()
-        .isInt({ min: 1 }).withMessage('National ID must be a positive integer'),
-];
+    if (customer.building && typeof customer.building !== "string") {
+        errors.building = "Building name must be a valid string.";
+    }
 
-exports.validateCustomerUpdate = [
-    param('id')
-        .isInt({ min: 1 })
-        .withMessage('Customer ID must be a positive integer'),
+    if (customer.house_number && typeof customer.house_number !== "string") {
+        errors.house_number = "House number must be a valid string.";
+    }
 
-    body('email')
-        .optional()
-        .isEmail()
-        .normalizeEmail()
-        .withMessage('Invalid email address'),
+    return {
+        isValid: Object.keys(errors).length === 0,
+        errors,
+    };
+};
 
-    body('password')
-        .optional()
-        .isLength({ min: 6 })
-        .withMessage('Password must be at least 6 characters long'),
-
-    body('firstName')
-        .optional()
-        .trim()
-        .isAlpha('en-US', { ignore: ' ' }).withMessage('First name must contain only letters'),
-
-    body('lastName')
-        .optional()
-        .trim()
-        .isAlpha('en-US', { ignore: ' ' }).withMessage('Last name must contain only letters'),
-
-    body('phoneNumber')
-        .optional()
-        .isMobilePhone('any')
-        .withMessage('Invalid phone number'),
-
-    body('nationalId')
-        .optional()
-        .trim()
-        .isInt({ min: 1 }).withMessage('National ID must be a positive integer'),
-];
+module.exports = validateCustomer;

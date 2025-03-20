@@ -1,9 +1,15 @@
+// models/delivery.js
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
-const Order = require('./order'); // Assuming an Order model exists
+const Order = require('./order');
 
-const Delivery = sequelize.define('Delivery', {
-    orderId: {
+const Delivery = sequelize.define('Deliveries', {
+    id: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true
+    },
+    order_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
@@ -12,35 +18,31 @@ const Delivery = sequelize.define('Delivery', {
         },
         onDelete: 'CASCADE'
     },
-    deliveryAddress: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-    status: {
+    delivery_status: {
         type: DataTypes.ENUM('Pending', 'Out for Delivery', 'Delivered', 'Failed'),
-        defaultValue: 'Pending',
-        allowNull: false
+        allowNull: false,
+        defaultValue: 'Pending'
     },
-    estimatedDeliveryTime: {
+    estimated_time: {
+        type: DataTypes.TIME,
+        allowNull: true
+    },
+    delivery_person: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    contact_number: {
+        type: DataTypes.STRING(20),
+        allowNull: true
+    },
+    created_at: {
         type: DataTypes.DATE,
-        allowNull: true
-    },
-    actualDeliveryTime: {
-        type: DataTypes.DATE,
-        allowNull: true
-    },
-    notes: {
-        type: DataTypes.TEXT, // Optional notes for the delivery
-        allowNull: true
+        defaultValue: DataTypes.NOW
     }
 }, {
-    indexes: [
-        { fields: ['orderId'] },
-        { fields: ['status'] }
-    ]
+    timestamps: false
 });
 
-// Associate Delivery with Order
-Delivery.belongsTo(Order, { foreignKey: 'orderId' });
+Delivery.belongsTo(Order, { foreignKey: 'order_id' });
 
 module.exports = Delivery;

@@ -1,54 +1,31 @@
 const express = require('express');
-const { body } = require('express-validator');
+const { body, param } = require('express-validator');
 const {
-    createBusinessOwner,
-    loginBusinessOwner,
+    registerBusinessOwner,
+    getBusinessOwners,
     getBusinessOwnerById,
-    updateBusinessOwnerProfile,
-    deleteBusinessOwner,
-    getRestaurantsByBusinessOwner
+    updateBusinessOwner,
+    deleteBusinessOwner
 } = require('../controllers/businessOwnerController');
-const authMiddleware = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
-// Register a new business owner
 router.post('/register',
     [
-        body('name').notEmpty().withMessage('Name is required'),
+        body('first_name').notEmpty().withMessage('First name is required'),
+        body('last_name').notEmpty().withMessage('Last name is required'),
+        body('business_name').notEmpty().withMessage('Business name is required'),
+        body('business_location').notEmpty().withMessage('Business location is required'),
         body('email').isEmail().withMessage('Valid email is required'),
-        body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters')
+        body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters'),
+        body('business_id').notEmpty().withMessage('Business ID is required')
     ],
-    createBusinessOwner
+    registerBusinessOwner
 );
 
-// Business owner login
-router.post('/login',
-    [
-        body('email').isEmail().withMessage('Valid email is required'),
-        body('password').notEmpty().withMessage('Password is required')
-    ],
-    loginBusinessOwner
-);
-
-// Get business owner profile (protected)
-router.get('/profile', authMiddleware, getBusinessOwnerById);
-
-// Update business owner profile (protected)
-router.put('/profile',
-    authMiddleware,
-    [
-        body('name').optional().notEmpty().withMessage('Name cannot be empty'),
-        body('email').optional().isEmail().withMessage('Valid email is required'),
-        body('password').optional().isLength({ min: 6 }).withMessage('Password must be at least 6 characters')
-    ],
-    updateBusinessOwnerProfile
-);
-
-// Delete business owner profile (protected)
-router.delete('/profile', authMiddleware, deleteBusinessOwner);
-
-// Get all restaurants owned by the business owner (protected)
-router.get('/restaurants', authMiddleware, getRestaurantsByBusinessOwner);
+router.get('/', getBusinessOwners);
+router.get('/:id', param('id').isInt(), getBusinessOwnerById);
+router.put('/:id', param('id').isInt(), updateBusinessOwner);
+router.delete('/:id', param('id').isInt(), deleteBusinessOwner);
 
 module.exports = router;

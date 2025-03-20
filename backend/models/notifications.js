@@ -2,28 +2,29 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
 const Notification = sequelize.define('Notification', {
-    recipientId: {
+    id: {
         type: DataTypes.INTEGER,
-        allowNull: false
+        autoIncrement: true,
+        primaryKey: true
     },
-    recipientType: {
-        type: DataTypes.ENUM('Customer', 'BusinessOwner'), // Determines if the notification is for a customer or a business
+    business_owner_id: {
+        type: DataTypes.INTEGER,
         allowNull: false
     },
     message: {
         type: DataTypes.TEXT,
         allowNull: false
     },
-    type: {
-        type: DataTypes.ENUM('Order Update', 'New Order', 'Promotion', 'General'),
-        allowNull: false
-    },
-    isRead: {
+    is_read: {
         type: DataTypes.BOOLEAN,
-        defaultValue: false // Marks whether the notification has been read
+        defaultValue: false
+    },
+    created_at: {
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW
     }
 }, {
-    timestamps: true // Adds createdAt and updatedAt fields
+    timestamps: false // Since `created_at` is handled by MySQL
 });
 
 module.exports = Notification;

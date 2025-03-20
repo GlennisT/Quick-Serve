@@ -1,68 +1,38 @@
-const { body, param } = require('express-validator');
+const validateAddress = (address) => {
+    const errors = {};
 
-exports.validateAddressCreation = [
-    body('streetAddress')
-        .notEmpty().withMessage('Street address is required')
-        .trim()
-        .isString().withMessage('Street address must be a valid string'),
-    
-    body('city')
-        .notEmpty().withMessage('City is required')
-        .trim()
-        .isAlpha('en-US', { ignore: ' ' }).withMessage('City must contain only letters'),
+    if (!address.customer_id || isNaN(address.customer_id)) {
+        errors.customer_id = "Customer ID is required and must be a number.";
+    }
 
-    body('state')
-        .notEmpty().withMessage('State is required')
-        .trim()
-        .isAlpha('en-US', { ignore: ' ' }).withMessage('State must contain only letters'),
+    if (!address.first_name || address.first_name.trim().length === 0) {
+        errors.first_name = "First name is required.";
+    } else if (address.first_name.length > 100) {
+        errors.first_name = "First name must not exceed 100 characters.";
+    }
 
-    body('postalCode')
-        .notEmpty().withMessage('Postal code is required')
-        .trim()
-        .isAlphanumeric().withMessage('Postal code must be alphanumeric'),
+    if (!address.building_name || address.building_name.trim().length === 0) {
+        errors.building_name = "Building name is required.";
+    } else if (address.building_name.length > 255) {
+        errors.building_name = "Building name must not exceed 255 characters.";
+    }
 
-    body('country')
-        .notEmpty().withMessage('Country is required')
-        .trim()
-        .isAlpha('en-US', { ignore: ' ' }).withMessage('Country must contain only letters'),
+    if (!address.house_number || address.house_number.trim().length === 0) {
+        errors.house_number = "House number is required.";
+    } else if (address.house_number.length > 50) {
+        errors.house_number = "House number must not exceed 50 characters.";
+    }
 
-    body('addressType')
-        .notEmpty().withMessage('Address type is required')
-        .trim()
-        .isIn(['customer', 'business']).withMessage('Address type must be customer or business'),
-];
+    if (!address.street || address.street.trim().length === 0) {
+        errors.street = "Street is required.";
+    } else if (address.street.length > 255) {
+        errors.street = "Street must not exceed 255 characters.";
+    }
 
-exports.validateAddressUpdate = [
-    param('id')
-        .isInt({ min: 1 }).withMessage('Address ID must be a positive integer'),
+    return {
+        isValid: Object.keys(errors).length === 0,
+        errors,
+    };
+};
 
-    body('streetAddress')
-        .optional()
-        .trim()
-        .isString().withMessage('Street address must be a valid string'),
-
-    body('city')
-        .optional()
-        .trim()
-        .isAlpha('en-US', { ignore: ' ' }).withMessage('City must contain only letters'),
-
-    body('state')
-        .optional()
-        .trim()
-        .isAlpha('en-US', { ignore: ' ' }).withMessage('State must contain only letters'),
-
-    body('postalCode')
-        .optional()
-        .trim()
-        .isAlphanumeric().withMessage('Postal code must be alphanumeric'),
-
-    body('country')
-        .optional()
-        .trim()
-        .isAlpha('en-US', { ignore: ' ' }).withMessage('Country must contain only letters'),
-
-    body('addressType')
-        .optional()
-        .trim()
-        .isIn(['customer', 'business']).withMessage('Address type must be customer or business'),
-];
+module.exports = validateAddress;

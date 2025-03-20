@@ -2,58 +2,59 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
 const Order = sequelize.define('Order', {
-    customerId: {
+    order_id: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true
+    },
+    customer_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-            model: 'Customers', // Reference to the Customers table
+            model: 'Customers',
             key: 'id'
         }
     },
-    restaurantId: {
+    restaurant_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-            model: 'Restaurants', // Reference to the Restaurants table
+            model: 'Restaurants',
             key: 'id'
         }
     },
-    totalAmount: {
+    total_price: {
         type: DataTypes.DECIMAL(10, 2),
         allowNull: false,
         validate: {
             isDecimal: true,
-            min: 0.01 // Prevents zero or negative total amounts
+            min: 0.01
         }
     },
-    status: {
-        type: DataTypes.ENUM('pending', 'confirmed', 'preparing', 'out_for_delivery', 'delivered', 'cancelled'),
-        allowNull: false,
-        defaultValue: 'pending'
+    payment_method: {
+        type: DataTypes.ENUM('Cash', 'M-Pesa'),
+        allowNull: false
     },
-    paymentMethod: {
-        type: DataTypes.ENUM('cash', 'credit_card', 'mpesa'),
-        allowNull: false,
-        defaultValue: 'mpesa'
+    payment_status: {
+        type: DataTypes.ENUM('Pending', 'Paid', 'Failed'),
+        allowNull: true,
+        defaultValue: 'Pending'
     },
-    paymentStatus: {
-        type: DataTypes.ENUM('pending', 'paid', 'failed'),
-        allowNull: false,
-        defaultValue: 'pending'
+    order_status: {
+        type: DataTypes.ENUM('Pending', 'Processing', 'Completed', 'Cancelled'),
+        allowNull: true,
+        defaultValue: 'Pending'
     },
-    deliveryAddress: {
+    transaction_id: {
         type: DataTypes.STRING,
         allowNull: true
     },
-    deletedAt: {
-        type: DataTypes.DATE // Enables soft delete feature
+    created_at: {
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW
     }
 }, {
-    indexes: [
-        { fields: ['customerId', 'status'] },
-        { fields: ['restaurantId', 'status'] }
-    ],
-    paranoid: true // Enables soft delete (records are hidden instead of permanently deleted)
+    timestamps: false // Since `created_at` is handled manually
 });
 
 module.exports = Order;

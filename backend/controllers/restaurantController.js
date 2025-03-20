@@ -33,7 +33,7 @@ exports.getRestaurantById = [
     }
 ];
 
-// Create Restaurant
+// Create a new Restaurant
 exports.createRestaurant = [
     body('business_owner_id').isInt().withMessage('Business owner ID is required and must be an integer'),
     body('name').isString().notEmpty().withMessage('Restaurant name is required'),
@@ -45,13 +45,15 @@ exports.createRestaurant = [
             return res.status(400).json({ errors: errors.array() });
         }
         try {
-            const { business_owner_id, name, location, logo = null } = req.body;
+            const { business_owner_id, name, location, logo, openingHours, closingHours } = req.body;
 
             const restaurant = await Restaurant.create({
                 business_owner_id,
                 name,
                 location,
-                logo
+                logo,
+                openingHours,
+                closingHours
             });
 
             res.status(201).json({ message: 'Restaurant created successfully', restaurant });

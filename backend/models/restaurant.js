@@ -2,6 +2,19 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
 const Restaurant = sequelize.define('Restaurant', {
+    id: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true
+    },
+    business_owner_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+            model: 'BusinessOwners',
+            key: 'id'
+        }
+    },
     name: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -10,75 +23,42 @@ const Restaurant = sequelize.define('Restaurant', {
             len: [2, 100]
         }
     },
-    description: {
-        type: DataTypes.TEXT,
-        allowNull: true
+    location: {
+        type: DataTypes.STRING,
+        allowNull: false
     },
-    logoUrl: {
+    logo: {
         type: DataTypes.STRING,
         allowNull: true,
         validate: {
             isUrl: true
         }
     },
-    phoneNumber: {
-        type: DataTypes.STRING,
-        allowNull: true,
-        validate: {
-            is: /^[\d+\s-]+$/, // Allows numbers, spaces, +, and -
-            len: [10, 15]
-        }
-    },
-    ownerId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-            model: 'BusinessOwners',
-            key: 'id'
-        }
-    },
-    deliveryRange: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
-        validate: {
-            min: 1,
-            max: 50
-        }
-    },
-    cuisineType: {
-        type: DataTypes.STRING,
-        allowNull: true,
-        validate: {
-            len: [3, 50]
-        }
-    },
     openingHours: {
-        type: DataTypes.STRING(10), // Allows flexible time formats
-        allowNull: false
+        type: DataTypes.STRING(10),
+        allowNull: false,
+        defaultValue: "08:00 AM"
     },
     closingHours: {
         type: DataTypes.STRING(10),
-        allowNull: false
+        allowNull: false,
+        defaultValue: "10:00 PM"
     },
     status: {
         type: DataTypes.ENUM('open', 'closed', 'temporarily_closed'),
         allowNull: false,
         defaultValue: 'open'
     },
-    address: {
-        type: DataTypes.STRING,
-        allowNull: true
-    },
     deletedAt: {
         type: DataTypes.DATE
     }
 }, {
+    timestamps: true,
+    paranoid: true, // Enables soft delete
     indexes: [
         { unique: true, fields: ['name'] },
-        { fields: ['ownerId'] },
-        { fields: ['cuisineType'] }
-    ],
-    paranoid: true
+        { fields: ['business_owner_id'] }
+    ]
 });
 
 module.exports = Restaurant;

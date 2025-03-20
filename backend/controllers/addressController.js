@@ -2,7 +2,7 @@ const Address = require('../models/address');
 const { validationResult, body, param } = require('express-validator');
 
 // Get All Addresses
-exports.getAddresses = async (req, res) => {
+exports.getAllAddresses = async (req, res) => {
     try {
         const addresses = await Address.findAll();
         res.status(200).json(addresses);

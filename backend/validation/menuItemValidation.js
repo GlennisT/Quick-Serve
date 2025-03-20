@@ -1,50 +1,30 @@
-const { body, param } = require('express-validator');
+const validateMenuItem = (menuItem) => {
+    const errors = {};
 
-exports.validateMenuItemCreation = [
-    body('name')
-        .notEmpty().withMessage('Menu item name is required')
-        .trim()
-        .matches(/^[A-Za-z0-9\s-]+$/).withMessage('Menu item name must contain only letters, numbers, spaces, or hyphens'),
+    if (!menuItem.business_id || typeof menuItem.business_id !== "string" || menuItem.business_id.length > 10) {
+        errors.business_id = "Valid business ID (max 10 characters) is required.";
+    }
 
-    body('description')
-        .optional()
-        .trim()
-        .isLength({ max: 500 }).withMessage('Description must be a string with a maximum of 500 characters'),
+    if (!menuItem.item_name || typeof menuItem.item_name !== "string" || menuItem.item_name.length > 255) {
+        errors.item_name = "Item name is required and must be within 255 characters.";
+    }
 
-    body('price')
-        .isFloat({ min: 0, max: 999999.99 }).withMessage('Price must be a positive number and less than 1 million'),
+    if (!menuItem.price || isNaN(menuItem.price) || parseFloat(menuItem.price) <= 0) {
+        errors.price = "Valid price is required (greater than 0).";
+    }
 
-    body('imageUrl')
-        .optional()
-        .isURL().withMessage('Image URL must be a valid URL'),
+    if (menuItem.image && typeof menuItem.image !== "string") {
+        errors.image = "Image URL must be a valid string.";
+    }
 
-    body('restaurantId')
-        .isInt({ min: 1 }).withMessage('Restaurant ID must be a positive integer'),
-];
+    if (menuItem.available_stock !== undefined && (!Number.isInteger(menuItem.available_stock) || menuItem.available_stock < 0)) {
+        errors.available_stock = "Available stock must be a non-negative integer.";
+    }
 
-exports.validateMenuItemUpdate = [
-    param('id')
-        .isInt({ min: 1 }).withMessage('Menu item ID must be a positive integer'),
+    return {
+        isValid: Object.keys(errors).length === 0,
+        errors,
+    };
+};
 
-    body('name')
-        .optional()
-        .trim()
-        .matches(/^[A-Za-z0-9\s-]+$/).withMessage('Menu item name must contain only letters, numbers, spaces, or hyphens'),
-
-    body('description')
-        .optional()
-        .trim()
-        .isLength({ max: 500 }).withMessage('Description must be a string with a maximum of 500 characters'),
-
-    body('price')
-        .optional()
-        .isFloat({ min: 0, max: 999999.99 }).withMessage('Price must be a positive number and less than 1 million'),
-
-    body('imageUrl')
-        .optional()
-        .isURL().withMessage('Image URL must be a valid URL'),
-
-    body('restaurantId')
-        .optional()
-        .isInt({ min: 1 }).withMessage('Restaurant ID must be a positive integer'),
-];
+module.exports = validateMenuItem;

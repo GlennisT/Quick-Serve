@@ -3,6 +3,7 @@ const { body, param } = require('express-validator');
 const {
     createNotification,
     getNotificationsByOwner,
+    getNotificationById,
     markNotificationAsRead,
     deleteNotification
 } = require('../controllers/notificationsController');
@@ -13,7 +14,7 @@ const router = express.Router();
 router.post('/',
     [
         body('business_owner_id').isInt().withMessage('Business owner ID must be an integer'),
-        body('message').isString().withMessage('Message must be a text string')
+        body('message').isString().notEmpty().withMessage('Message is required')
     ],
     createNotification
 );
@@ -24,12 +25,15 @@ router.get('/:business_owner_id',
     getNotificationsByOwner
 );
 
+// Get a single notification by ID
+router.get('/notification/:id',
+    param('id').isInt().withMessage('Notification ID must be an integer'),
+    getNotificationById
+);
+
 // Mark a notification as read
 router.patch('/:id',
-    [
-        param('id').isInt().withMessage('Notification ID must be an integer'),
-        body('is_read').isBoolean().withMessage('is_read must be a boolean value')
-    ],
+    param('id').isInt().withMessage('Notification ID must be an integer'),
     markNotificationAsRead
 );
 

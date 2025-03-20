@@ -1,25 +1,28 @@
+// models/paymentmethods.js
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
 const PaymentMethod = sequelize.define('PaymentMethod', {
-    name: {
-        type: DataTypes.ENUM('cash', 'credit_card', 'mpesa'),
+    id: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true,
+    },
+    restaurant_id: {
+        type: DataTypes.INTEGER,
         allowNull: false,
-        unique: true
     },
-    description: {
-        type: DataTypes.STRING,
-        allowNull: true
+    method: {
+        type: DataTypes.STRING(50),
+        allowNull: false,
     },
-    active: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: true
-    },
-    deletedAt: {
-        type: DataTypes.DATE // Enables soft delete feature
+    created_at: {
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW,
     }
 }, {
-    paranoid: true // Enables soft delete
+    timestamps: false, // Disable timestamps as 'created_at' is manually defined
+    tableName: 'payment_methods',
 });
 
 module.exports = PaymentMethod;

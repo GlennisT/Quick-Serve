@@ -3,8 +3,21 @@ const sequelize = require('../config/database');
 const bcrypt = require('bcrypt');
 
 const Customer = sequelize.define('Customer', {
+    id: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true
+    },
+    first_name: {
+        type: DataTypes.STRING(255),
+        allowNull: false
+    },
+    last_name: {
+        type: DataTypes.STRING(255),
+        allowNull: false
+    },
     email: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(255),
         allowNull: false,
         unique: true,
         validate: {
@@ -12,42 +25,28 @@ const Customer = sequelize.define('Customer', {
         }
     },
     password: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(255),
         allowNull: false
     },
-    firstName: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-    lastName: {
-        type: DataTypes.STRING,
+    street: {
+        type: DataTypes.STRING(255),
         allowNull: true
     },
-    phoneNumber: {
-        type: DataTypes.STRING,
-        allowNull: true,
-        validate: {
-            is: /^[0-9]{10}$/, // Ensures exactly 10 digits
-            msg: 'Phone number must be 10 digits long'
-        }
+    building: {
+        type: DataTypes.STRING(255),
+        allowNull: true
     },
-    nationalId: {
-        type: DataTypes.STRING,
-        allowNull: true,
-        unique: true,
-        validate: {
-            isNumeric: true
-        }
+    house_number: {
+        type: DataTypes.STRING(50),
+        allowNull: true
     },
-    deletedAt: {
-        type: DataTypes.DATE // Enables soft delete feature
+    created_at: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: DataTypes.NOW
     }
 }, {
-    indexes: [
-        { unique: true, fields: ['email'] },
-        { unique: true, fields: ['nationalId'] }
-    ],
-    paranoid: true // Enables soft delete (does not permanently delete records)
+    timestamps: false // Prevents Sequelize from adding updatedAt & createdAt fields
 });
 
 // Hash password before saving
@@ -55,14 +54,9 @@ Customer.beforeCreate(async (customer) => {
     customer.password = await bcrypt.hash(customer.password, 10);
 });
 
-// Method to compare passwords (for login authentication)
+// Compare hashed passwords for login
 Customer.prototype.comparePassword = async function (enteredPassword) {
     return await bcrypt.compare(enteredPassword, this.password);
 };
-Customer.hasMany(require('./address'), { 
-    foreignKey: 'addressableId',
-    constraints: false,
-    scope: { addressableType: 'Customer' }
-});
 
 module.exports = Customer;

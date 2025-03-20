@@ -1,60 +1,50 @@
 const express = require('express');
-const { body, param, query } = require('express-validator');
+const { body, param } = require('express-validator');
 const router = express.Router();
 const {
-    getAddress,
+    getAllAddresses,
     getAddressById,
     createAddress,
     updateAddress,
-    deleteAddress,
-    getAddressesByAddressable
+    deleteAddress
 } = require('../controllers/addressController');
-const authMiddleware = require('../middleware/authMiddleware');
+const authMiddleware = require('../middleware/authMiddleware'); // Ensure you have authentication middleware
 
-// Route to get all addresses
-router.get('/addresses', authMiddleware, getAddress);
+// Get all addresses
+router.get('/addresses', authMiddleware, getAllAddresses);
 
-// Route to get a specific address by ID with validation
+// Get a specific address by ID
 router.get('/addresses/:id',
     authMiddleware,
-    param('id').isUUID().withMessage('ID must be a valid UUID'),
+    param('id').isInt().withMessage('ID must be an integer'),
     getAddressById
 );
 
-// Route to create a new address with validation
+// Create a new address
 router.post('/addresses',
     authMiddleware,
     [
-        body('street_address').notEmpty().withMessage('Street address is required'),
-        body('city').notEmpty().withMessage('City is required'),
-        body('country').notEmpty().withMessage('Country is required'),
-        body('zipcode').optional().isPostalCode('any').withMessage('Invalid postal code')
+        body('customer_id').isInt().withMessage('Customer ID must be an integer'),
+        body('first_name').notEmpty().withMessage('First name is required'),
+        body('building_name').notEmpty().withMessage('Building name is required'),
+        body('house_number').notEmpty().withMessage('House number is required'),
+        body('street').notEmpty().withMessage('Street is required')
     ],
     createAddress
 );
 
-// Route to update an address by ID using PATCH for partial updates
+// Update an address by ID
 router.patch('/addresses/:id',
     authMiddleware,
-    param('id').isUUID().withMessage('ID must be a valid UUID'),
+    param('id').isInt().withMessage('ID must be an integer'),
     updateAddress
 );
 
-// Route to delete an address by ID with validation
+// Delete an address by ID
 router.delete('/addresses/:id',
     authMiddleware,
-    param('id').isUUID().withMessage('ID must be a valid UUID'),
+    param('id').isInt().withMessage('ID must be an integer'),
     deleteAddress
-);
-
-// Route to get addresses by addressable ID and type
-router.get('/addresses/search',
-    authMiddleware,
-    [
-        query('addressableId').isUUID().withMessage('Addressable ID must be a valid UUID'),
-        query('addressableType').notEmpty().withMessage('Addressable type is required')
-    ],
-    getAddressesByAddressable
 );
 
 module.exports = router;
