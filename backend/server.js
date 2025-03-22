@@ -7,9 +7,11 @@ const cookieParser = require("cookie-parser");
 const errorMiddleware = require("./middleware/errorMiddleware");
 const authMiddleware = require("./middleware/authMiddleware");
 const corsMiddleware = require("./middleware/corsMiddleware");
+const PORT = 5000;
+
 
 // Import Routes
-const addressRoutes = require("./routes/addressRoutes");
+const addressRoutes = require('./routes/addressRoutes'); // Ensure correct path
 const businessOwnerRoutes = require("./routes/businessOwnerRoutes");
 const cartRoutes = require("./routes/cartRoutes");
 const customerRoutes = require("./routes/customerRoutes");
@@ -32,8 +34,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+app.use((req, res, next) => {
+    console.log(`Incoming Request: ${req.method} ${req.url}`);
+    next();
+  });
 // Routes
-app.use("/api/address", addressRoutes);
+app.use('/api/addresses', addressRoutes);
 app.use("/api/business-owner", businessOwnerRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/customers", customerRoutes);
@@ -45,15 +51,24 @@ app.use("/api/payment-methods", paymentMethodsRoutes);
 app.use("/api/restaurants", restaurantRoutes);
 app.use("/api/reviews", reviewRoutes);
 
+app.get('api/addresses', (req, res) => {
+  res.json({ message: 'Addresses endpoint works!' });
+});
+
+
 // Authentication Middleware (Apply to secured routes only)
 app.use("/api", authMiddleware);
 
 // Error Handling Middleware
 app.use(errorMiddleware);
 
-const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
-});
+  });
+  app.get("/", (req, res) => {
+      console.log("Received GET request at /");
+      res.send("Server is working!");
+    });
+
 
 module.exports = app;

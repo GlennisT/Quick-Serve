@@ -53,7 +53,9 @@ const BusinessOwner = sequelize.define('BusinessOwner', {
     }
     
 }, {
-    timestamps: false
+    timestamps: false,
+    tableName: 'business_owners',
+    freezeTableName: true,
 });
 
 // Hash password before saving

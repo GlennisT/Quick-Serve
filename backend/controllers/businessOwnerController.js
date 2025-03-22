@@ -1,4 +1,4 @@
-const BusinessOwner = require('../models/BusinessOwner');
+const BusinessOwner = require('../models/businessOwner');
 const { validationResult } = require('express-validator');
 const bcrypt = require('bcrypt');
 

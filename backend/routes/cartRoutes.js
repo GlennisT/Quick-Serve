@@ -11,9 +11,9 @@ const {
 } = require('../controllers/cartController');
 const authMiddleware = require('../middleware/authMiddleware');
 
-router.get('/cart', authMiddleware, getCart);
+router.get('/', authMiddleware, getCart);
 
-router.post('/cart',
+router.post('/',
     authMiddleware,
     [
         body('restaurant_id').isInt().withMessage('Restaurant ID must be an integer'),
@@ -23,20 +23,20 @@ router.post('/cart',
     addToCart
 );
 
-router.patch('/cart/:id',
+router.patch('/:id',
     authMiddleware,
     param('id').isInt().withMessage('Cart item ID must be an integer'),
     body('quantity').isInt({ min: 1 }).withMessage('Quantity must be at least 1'),
     updateCartItem
 );
 
-router.delete('/cart/:id',
+router.delete('/:id',
     authMiddleware,
     param('id').isInt().withMessage('Cart item ID must be an integer'),
     removeCartItem
 );
 
-router.delete('/cart', authMiddleware, clearCart);
+router.delete('/', authMiddleware, clearCart);
 
 module.exports = router;
 

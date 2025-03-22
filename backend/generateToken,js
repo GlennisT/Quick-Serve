@@ -1,0 +1,8 @@
+const jwt = require('jsonwebtoken');
+
+// Replace with actual values
+const payload = { customerId: "12345" }; // or { businessOwnerId: "67890" }
+const secret = "your_secret_key"; // Replace this with process.env.JWT_SECRET
+const token = jwt.sign(payload, secret, { expiresIn: "1h" });
+
+console.log("Generated JWT Token:", token);

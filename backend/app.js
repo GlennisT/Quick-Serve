@@ -33,6 +33,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+app.use((req, res, next) => {
+    console.log(`Incoming Request: ${req.method} ${req.url}`);
+    next();
+  });
+  
 // Routes
 app.use("/api/address", addressRoutes);
 app.use("/api/business-owner", businessOwnerRoutes);
@@ -51,10 +56,15 @@ app.use(authMiddleware);
 
 // Error Handling Middleware
 app.use(errorMiddleware);
-const PORT = process.env.PORT || 5000;
+const PORT = 5000;
+
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });
+app.get("/", (req, res) => {
+    console.log("Received GET request at /");
+    res.send("Server is working!");
+  });
 
 
 module.exports = app;

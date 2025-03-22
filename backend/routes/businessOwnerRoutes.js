@@ -24,7 +24,7 @@ router.post('/register',
 );
 
 router.get('/', getBusinessOwners);
-router.get('/:id', param('id').isInt(), getBusinessOwnerById);
+router.get('/:id', param('id').isInt().withMessage('ID must be an integer'), getBusinessOwnerById);
 router.put('/:id', param('id').isInt(), updateBusinessOwner);
 router.delete('/:id', param('id').isInt(), deleteBusinessOwner);
 

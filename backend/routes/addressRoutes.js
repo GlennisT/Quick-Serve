@@ -8,20 +8,20 @@ const {
     updateAddress,
     deleteAddress
 } = require('../controllers/addressController');
-const authMiddleware = require('../middleware/authMiddleware'); // Ensure you have authentication middleware
+const authMiddleware = require('../middleware/authMiddleware'); // Comment out if causing issues
 
 // Get all addresses
-router.get('/addresses', authMiddleware, getAllAddresses);
+router.get('/', authMiddleware, getAllAddresses);  // ✅ Matches `/api/addresses` in `server.js`
 
 // Get a specific address by ID
-router.get('/addresses/:id',
+router.get('/:id',
     authMiddleware,
     param('id').isInt().withMessage('ID must be an integer'),
     getAddressById
 );
 
 // Create a new address
-router.post('/addresses',
+router.post('/',
     authMiddleware,
     [
         body('customer_id').isInt().withMessage('Customer ID must be an integer'),
@@ -34,14 +34,14 @@ router.post('/addresses',
 );
 
 // Update an address by ID
-router.patch('/addresses/:id',
+router.patch('/:id',
     authMiddleware,
     param('id').isInt().withMessage('ID must be an integer'),
     updateAddress
 );
 
 // Delete an address by ID
-router.delete('/addresses/:id',
+router.delete('/:id',
     authMiddleware,
     param('id').isInt().withMessage('ID must be an integer'),
     deleteAddress

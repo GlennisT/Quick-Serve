@@ -35,7 +35,8 @@ const Cart = sequelize.define('Cart', {
 }, {
     timestamps: true,
     createdAt: 'created_at',
-    updatedAt: false
+    updatedAt: false,
+    tableName: 'cart',
 });
 
 // Associations
