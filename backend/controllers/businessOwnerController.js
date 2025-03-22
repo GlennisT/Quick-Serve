@@ -22,6 +22,11 @@ exports.registerBusinessOwner = async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: 'Error registering business owner', error: error.message });
     }
+    // Validate mpesaNumber (optional)
+if (!req.body.mpesaNumber || !/^\d{6,10}$/.test(req.body.mpesaNumber)) {
+    return res.status(400).json({ message: 'Invalid Mpesa Paybill number. It must be 6 to 10 digits.' });
+}
+
 };
 
 // Get all business owners
@@ -50,6 +55,10 @@ exports.updateBusinessOwner = async (req, res) => {
     try {
         const owner = await BusinessOwner.findByPk(req.params.id);
         if (!owner) return res.status(404).json({ message: 'Business owner not found' });
+    // If updating mpesaNumber, validate it
+   if (req.body.mpesaNumber && !/^\d{6,10}$/.test(req.body.mpesaNumber)) {
+    return res.status(400).json({ message: 'Invalid Mpesa Paybill number. It must be 6 to 10 digits.' });
+}
 
         // Update only provided fields
         Object.assign(owner, req.body);

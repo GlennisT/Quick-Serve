@@ -11,6 +11,7 @@ exports.getPaymentMethodsByRestaurant = async (req, res) => {
         const { restaurant_id } = req.params;
         const paymentMethods = await PaymentMethod.findAll({
             where: { restaurant_id },
+            attributes: ['id', 'restaurant_id', 'method', 'mpesa_paybill', 'created_at'],
             order: [['created_at', 'DESC']]
         });
         res.status(200).json(paymentMethods);
@@ -26,8 +27,12 @@ exports.getPaymentMethodById = async (req, res) => {
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
     }
+
     try {
-        const paymentMethod = await PaymentMethod.findByPk(req.params.id);
+        const paymentMethod = await PaymentMethod.findByPk(req.params.id,  {
+            attributes: ['id', 'restaurant_id', 'method', 'mpesa_paybill', 'created_at']
+        });
+
         if (!paymentMethod) {
             return res.status(404).json({ message: 'Payment method not found' });
         }
@@ -45,8 +50,11 @@ exports.createPaymentMethod = async (req, res) => {
         return res.status(400).json({ errors: errors.array() });
     }
     try {
-        const { restaurant_id, method } = req.body;
-        const paymentMethod = await PaymentMethod.create({ restaurant_id, method });
+        const { restaurant_id, method, mpesa_paybill } = req.body;
+        if (method.toLowerCase() === 'mpesa' && (!mpesa_paybill || !/^\d{6,10}$/.test(mpesa_paybill))) {
+            return res.status(400).json({ message: 'Invalid Mpesa Paybill number. It must be 6 to 10 digits.' });
+        }
+        const paymentMethod = await PaymentMethod.create({ restaurant_id, method, mpesa_paybill });
         res.status(201).json({ message: 'Payment method added successfully', paymentMethod });
     } catch (error) {
         console.error('Error creating payment method:', error);
@@ -70,5 +78,27 @@ exports.deletePaymentMethod = async (req, res) => {
     } catch (error) {
         console.error('Error deleting payment method:', error);
         res.status(500).json({ message: 'Error deleting payment method', error: error.message });
+    }
+};
+// Update a payment method by ID
+// Update a payment method by ID
+exports.updatePaymentMethod = async (req, res) => {
+    const { id } = req.params;
+    const { method } = req.body;
+
+    try {
+        const paymentMethod = await PaymentMethod.findByPk(id);
+        if (!paymentMethod) {
+            return res.status(404).json({ message: 'Payment method not found' });
+        }
+
+        // Update the method
+        paymentMethod.method = method;
+        await paymentMethod.save();
+
+        res.status(200).json({ message: 'Payment method updated successfully', paymentMethod });
+    } catch (error) {
+        console.error('Error updating payment method:', error);
+        res.status(500).json({ message: 'Error updating payment method', error: error.message });
     }
 };

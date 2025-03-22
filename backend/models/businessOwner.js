@@ -43,10 +43,15 @@ const BusinessOwner = sequelize.define('BusinessOwner', {
         allowNull: false,
         unique: true
     },
-    created_at: {
-        type: DataTypes.DATE,
-        defaultValue: DataTypes.NOW
+    mpesaNumber: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+            isNumeric: true,
+            len: [6, 10]  // Ensures Paybill/Till number is between 6 and 10 digits
+        }
     }
+    
 }, {
     timestamps: false
 });

@@ -2,7 +2,7 @@
 const Delivery = require('../models/deliveries');
 const Order = require('../models/order');
 const { validationResult, body, param } = require('express-validator');
-
+const smsService = require('../services/smsService');
 // Get all deliveries
 exports.getAllDeliveries = async (req, res) => {
     try {
@@ -12,7 +12,22 @@ exports.getAllDeliveries = async (req, res) => {
         res.status(500).json({ message: 'Error fetching deliveries', error: error.message });
     }
 };
+exports.updateDeliveryStatus = async (req, res) => {
+    try {
+        const { deliveryId, status, customerPhone } = req.body;
 
+        // Update delivery status in database (assuming you have a service function for this)
+        await Delivery.update({ delivery_status: status }, { where: { id: deliveryId } });
+
+        // Send SMS notification
+        const message = `Your order #${deliveryId} status has been updated to: ${status}`;
+        await smsService.sendSMS(customerPhone, message);
+
+        res.status(200).json({ success: true, message: "Delivery status updated and SMS sent!" });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
 // Get delivery by ID
 exports.getDeliveryById = [
     param('id').isInt().withMessage('Delivery ID must be an integer'),

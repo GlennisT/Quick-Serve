@@ -1,6 +1,6 @@
 const Order = require('../models/order'); // Import your Order model
 const { validationResult, body, param } = require('express-validator'); // Import express-validator
-
+const emailService = require('../services/emailService');
 // Create a new order
 exports.createOrder = [
     body('customer_id').isInt().withMessage('Customer ID must be an integer'),
@@ -27,7 +27,23 @@ exports.createOrder = [
         }
     }
 ];
+exports.placeOrder = async (req, res) => {
+    try {
+        const { customerEmail, orderId } = req.body;
+        
+        // Assume order is placed in DB here...
 
+        await emailService.sendEmail(
+            customerEmail,
+            "Order Confirmation",
+            `Your order #${orderId} has been received and is being processed.`
+        );
+
+        res.status(201).json({ success: true, message: "Order placed and email sent!" });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
 // Get order by ID
 exports.getOrderById = [
     param('order_id').isInt().withMessage('Order ID must be an integer'),
