@@ -5,10 +5,13 @@ const { validationResult } = require('express-validator');
 
 exports.getCart = async (req, res) => {
     try {
-        const cartItems = await Cart.findAll({ where: { customer_id: req.user.id } });
-        res.status(200).json(cartItems);
+        const userId = 1; // Temporary user ID (replace with an actual test user ID from your database)
+
+        const cartItems = await Cart.findAll({ where: { user_id: userId } });
+
+        res.json(cartItems);
     } catch (error) {
-        res.status(500).json({ message: 'Error fetching cart items', error: error.message });
+        res.status(500).json({ message: "Error fetching cart items", error: error.message });
     }
 };
 

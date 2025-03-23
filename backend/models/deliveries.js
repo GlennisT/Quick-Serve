@@ -40,7 +40,8 @@ const Delivery = sequelize.define('Deliveries', {
         defaultValue: DataTypes.NOW
     }
 }, {
-    timestamps: false
+    timestamps: false,
+    tableName: 'deliveries',
 });
 
 Delivery.belongsTo(Order, { foreignKey: 'order_id' });

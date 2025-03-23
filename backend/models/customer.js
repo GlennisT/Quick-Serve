@@ -46,7 +46,8 @@ const Customer = sequelize.define('Customer', {
         defaultValue: DataTypes.NOW
     }
 }, {
-    timestamps: false // Prevents Sequelize from adding updatedAt & createdAt fields
+    timestamps: false,
+    tableName: 'customers', // Prevents Sequelize from adding updatedAt & createdAt fields
 });
 
 // Hash password before saving

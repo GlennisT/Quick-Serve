@@ -24,7 +24,8 @@ const Notification = sequelize.define('Notification', {
         defaultValue: DataTypes.NOW
     }
 }, {
-    timestamps: false // Since `created_at` is handled by MySQL
+    timestamps: false,
+    tableName: 'notifications', // Since `created_at` is handled by MySQL
 });
 
 module.exports = Notification;

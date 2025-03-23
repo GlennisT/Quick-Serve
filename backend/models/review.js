@@ -41,7 +41,8 @@ const Review = sequelize.define('Review', {
         allowNull: true
     }
 }, {
-    timestamps: true
+    timestamps: true,
+    tableName: 'reviews',
 });
 
 module.exports = Review;

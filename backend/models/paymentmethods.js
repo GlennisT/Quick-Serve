@@ -21,6 +21,7 @@ const PaymentMethod = sequelize.define('PaymentMethod', {
     },
 }, {
     timestamps: false,
+    tableName: 'payment_methods',
 });
 
 module.exports = PaymentMethod;

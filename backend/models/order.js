@@ -54,7 +54,8 @@ const Order = sequelize.define('Order', {
         defaultValue: DataTypes.NOW
     }
 }, {
-    timestamps: false // Since `created_at` is handled manually
+    timestamps: false,
+    tableName: 'orders', // Since `created_at` is handled manually
 });
 
 module.exports = Order;

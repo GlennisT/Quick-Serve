@@ -41,7 +41,8 @@ const MenuItem = sequelize.define('MenuItem', {
         defaultValue: DataTypes.NOW
     }
 }, {
-    timestamps: false // Disables auto `updatedAt` & `createdAt` fields
+    tableName: 'menu_items',
+    timestamps: false, // Disables auto `updatedAt` & `createdAt` fields
 });
 
 module.exports = MenuItem;
