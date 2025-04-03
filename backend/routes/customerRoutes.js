@@ -5,7 +5,8 @@ const {
     loginCustomer,
     getCustomerProfile,
     updateCustomerProfile,
-    deleteCustomer
+    deleteCustomer,
+    customerLogout,
 } = require('../controllers/customerController');
 const authMiddleware = require('../middleware/authMiddleware');
 
@@ -25,5 +26,6 @@ router.patch('/profile/:id', authMiddleware, updateCustomerProfile);
 
 // Delete Customer Account
 router.delete('/profile/:id', authMiddleware, deleteCustomer);
+router.post('/logout', customerLogout); // Customer logout
 
 module.exports = router;

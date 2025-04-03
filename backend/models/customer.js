@@ -44,6 +44,10 @@ const Customer = sequelize.define('Customer', {
         type: DataTypes.DATE,
         allowNull: false,
         defaultValue: DataTypes.NOW
+    },
+    phone_number: { // Added phone_number
+        type: DataTypes.STRING(20), // Adjust length as needed
+        allowNull: true, // Or false if you want it required
     }
 }, {
     timestamps: false,

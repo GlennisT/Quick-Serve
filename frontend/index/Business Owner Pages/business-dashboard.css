@@ -1,0 +1,159 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('/images/food5.jpg') no-repeat center center fixed;
+    background-size: cover;
+    color: #fff;
+    margin: 0;
+    padding: 0;
+    display: flex; /* Make body a flex container */
+    flex-direction: column; /* Stack children vertically */
+    min-height: 100vh; /* Ensure body takes full viewport height */
+}
+
+header {
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 5px 0;
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 10px;
+}
+
+.logo img {
+    max-width: 150px;
+    height: auto;
+}
+
+nav button, nav a {
+    margin-left: 10px;
+    text-decoration: none;
+    color: pink;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.container {
+    width: 80%;
+    max-width: 1200px;
+    margin: 20px auto;
+    background-color: rgba(0, 0, 0, 0.582);
+    padding: 20px;
+    border-radius: 10px;
+    flex: 1;
+}
+
+h2 {
+    color: pink;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+input[type="text"], input[type="email"], input[type="password"], input[type="number"] {
+    width: calc(100% - 22px);
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: rgba(29, 27, 27, 0.747);
+    color: #fff;
+}
+
+button {
+    background-color: pink;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin: 10px;
+}
+
+button:hover {
+    background-color: rgb(245, 207, 213);
+}
+
+.hidden {
+    display: none;
+}
+
+#menu-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+#menu-table th, #menu-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+#menu-table th {
+    background-color: #f2f2f2;
+}
+
+#add-item-form input {
+    width: calc(100% - 22px);
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: rgba(29, 27, 27, 0.747);
+    color: #fff;
+}
+
+#add-item-form button {
+    background-color: pink;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin: 10px;
+}
+
+#add-item-form button:hover {
+    background-color: rgb(245, 207, 213);
+}
+
+footer {
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    text-align: center;
+    padding: 10px 0;
+    margin-top: auto;
+    width: 100%;
+}
+
+/* Payment Options Styles */
+.payment-option-label {
+    color: rgb(20, 170, 20);
+    margin-bottom: 5px; /* Add some spacing between labels */
+}
+
+.payment-number {
+    margin-left: 20px; /* Indent the number input fields */
+}
+
+/* Logo Upload Styles */
+#business-logo-preview {
+    max-width: 150px;
+    height: auto;
+}
+
+#logo {
+    display: block; /* Make the file input visible */
+    margin-top: 5px; /* Add some spacing */
+}

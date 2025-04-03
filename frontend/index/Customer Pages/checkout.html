@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>QuickServe - Checkout</title>
+    
+    <link rel="stylesheet" href="/frontend/index/Customer Pages/checkout.css">
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <img src="/images/logo.png" alt="QuickServe Logo">
+            </div>
+            <nav>
+                <a href="/frontend/index/Customer Pages/customer-dashboard.html">Dashboard</a>
+                <a href="/frontend/index/Customer Pages/cart.html">Cart</a>
+                <a href="/frontend/index/Customer Pages/customer-profile.html">Profile</a>
+                <a href="#">Logout</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <h1>Checkout</h1>
+
+        <div id="cart-summary">
+            <h2>Order Summary</h2>
+            <div id="cart-items">
+                </div>
+            <p id="total-price"></p>
+        </div>
+
+        <div id="delivery-address">
+            <h2>Delivery Address</h2>
+            <form id="address-form">
+                <label for="street">Street Address:</label><br>
+                <input type="text" id="street" name="street" required><br><br>
+
+                <label for="city">City:</label><br>
+                <input type="text" id="city" name="city" required><br><br>
+
+                <label for="building-name">Building Name:</label><br>
+                <input type="text" id="postal-code" name="postal-code"><br><br>
+
+                <label for="phone">Phone Number:</label><br>
+                <input type="tel" id="phone" name="phone" required><br><br>
+
+                <button type="submit">Confirm Order</button>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 QuickServe. All rights reserved.</p>
+    </footer>
+
+    <script src="/frontend/index/Customer Pages/checkout.js"></script>
+</body>
+</html>

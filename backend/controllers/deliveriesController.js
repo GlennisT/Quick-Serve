@@ -2,7 +2,7 @@
 const Delivery = require('../models/deliveries');
 const Order = require('../models/order');
 const { validationResult, body, param } = require('express-validator');
-const smsService = require('../services/smsService');
+const smsService = require('../services/atService');
 // Get all deliveries
 exports.getAllDeliveries = async (req, res) => {
     try {

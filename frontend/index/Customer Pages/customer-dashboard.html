@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>QuickServe - Customer Dashboard</title>
+    <link rel="stylesheet" href="/frontend/index/Customer Pages/customer-dashboard.css">
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <h1>QuickServe</h1>
+            <div class="logo">
+                <img src="/images/logo.png" alt="QuickServe Logo">
+            </div>
+            <nav>
+                <div class="profile-dropdown">
+                    <a href="/frontend/index/Customer Pages/customer-profile.html" id="profile-link">Profile</a>
+                    <div class="profile-content hidden">
+                        <a href="#">View Profile</a>
+                        <a href="#">Edit Profile</a>
+                        <a href="#">Logout</a>
+                    </div>
+                </div>
+                <a href="/frontend/index/Miscellaneous/about.html">About</a>
+                <a href="/frontend/index/Miscellaneous/faqs.html">FAQ</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <section id="restaurant-list">
+            <h2>Restaurants</h2>
+            <div class="restaurants">
+                </div>
+        </section>
+
+        <section id="cart" class="hidden">
+            <h2>Your Cart</h2>
+            <div id="cart-items">
+                </div>
+            <button id="checkout-button">Checkout</button>
+        </section>
+
+        <section id="restaurant-reviews" class="hidden">
+            <h2>Restaurant Reviews</h2>
+            <div id="reviews-list">
+                </div>
+            <button id="close-reviews">Close Reviews</button>
+        </section>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 QuickServe. All rights reserved.</p>
+    </footer>
+
+    <script src="/frontend/index/Customer Pages/customer-dashboard.js"></script>
+</body>
+</html>

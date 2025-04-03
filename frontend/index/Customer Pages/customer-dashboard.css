@@ -1,0 +1,144 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('/images/food7.jpeg') no-repeat center center fixed;
+    background-size: cover;
+    color: #fff;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; /* Adjust to start to accommodate sections */
+    min-height: 100vh;
+}
+
+header {
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 10px 0;
+    position: relative; /* Add relative positioning */
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+}
+
+
+.profile-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.profile-content {
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+.profile-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.profile-content a:hover {
+    background-color: #f1f1f1;
+}
+.logo {
+    position: absolute;
+    top: 5px; /* Adjust top position */
+    left: 20px;
+    height: 60px; /* Limit height */
+    overflow: hidden; /* Prevent overflow */
+}
+
+.logo img {
+    max-width: 200px; /* Reduce max-width */
+    height: auto; /* Maintain aspect ratio */
+}
+
+nav a {
+    margin-left: 20px;
+    text-decoration: none;
+    color: pink;
+}
+
+.container {
+    width: 80%;
+    max-width: 1200px; /* Increased max width */
+    background-color: rgba(0, 0, 0, 0.582); /* Darker container */
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    margin: 20px auto;
+}
+
+#restaurant-list h2, #cart h2, #restaurant-reviews h2 {
+    text-align: center;
+    color: pink;
+}
+
+.restaurants {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.restaurant-item {
+    background-color: rgba(200, 200, 200, 0.2); /* Slightly transparent */
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 10px;
+    width: 150px;
+    height: 150px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid pink;
+}
+
+.restaurant-item img {
+    max-width: 80px;
+    max-height: 80px;
+}
+
+.hidden {
+    display: none;
+}
+
+#cart-items, #reviews-list {
+    margin-bottom: 20px;
+}
+
+#checkout-button, #close-reviews {
+    background-color: pink;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    width: auto; /* Adjust to content */
+    margin: 10px auto; /* Center buttons */
+    display: block;
+}
+
+#checkout-button:hover, #close-reviews:hover {
+    background-color: rgb(245, 207, 213);
+}
+
+footer {
+    background-color: rgba(0, 0, 0, 0.5); /* Darker footer */
+    color: #fff;
+    text-align: center;
+    padding: 10px 0;
+    margin-top: auto;
+    width: 100%;
+}

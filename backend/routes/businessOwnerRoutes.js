@@ -5,7 +5,11 @@ const {
     getBusinessOwners,
     getBusinessOwnerById,
     updateBusinessOwner,
-    deleteBusinessOwner
+    deleteBusinessOwner,
+    businessLogout,
+    getBusinessProfile,
+    getBusinessDashboardData,
+    loginBusinessOwner,
 } = require('../controllers/businessOwnerController');
 
 const router = express.Router();
@@ -27,5 +31,8 @@ router.get('/', getBusinessOwners);
 router.get('/:id', param('id').isInt().withMessage('ID must be an integer'), getBusinessOwnerById);
 router.put('/:id', param('id').isInt(), updateBusinessOwner);
 router.delete('/:id', param('id').isInt(), deleteBusinessOwner);
-
+router.post('/logout', businessLogout); // Business logout
+router.get('/profile', getBusinessProfile); // Get business profile
+router.get('/dashboard', getBusinessDashboardData); // Get dashboard data
+router.post('/login', loginBusinessOwner);
 module.exports = router;

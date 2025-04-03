@@ -40,7 +40,7 @@ app.use((req, res, next) => {
   });
 // Routes
 app.use('/api/addresses', addressRoutes);
-app.use("/api/business-owner", businessOwnerRoutes);
+app.use("/api/business", businessOwnerRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/customers", customerRoutes);
 app.use("/api/deliveries", deliveriesRoutes);

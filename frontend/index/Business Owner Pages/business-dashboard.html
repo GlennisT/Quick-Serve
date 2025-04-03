@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>QuickServe - Business Dashboard</title>
+    <link rel="stylesheet" href="/frontend/index/Business Owner Pages/business-dashboard.css">
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <h1>QuickServe</h1>
+            <nav>
+                <button id="profile-button">Profile</button>
+                <button id="menu-button">Menu</button>
+                <button id="orders-button">Orders</button>
+                <a href="/frontend/index/Business Owner Pages/business-about.html">About</a>
+                <a href="/frontend/index/Business Owner Pages/business-faqs.html">FAQ</a>
+            </nav>
+        </div>
+    </header>
+    <section id="reviews-section" class="hidden">
+        <h2>Customer Reviews</h2>
+        <div id="reviews-list">
+            </div>
+    </section>
+
+    <div class="container">
+        <section id="profile-section" class="hidden">
+            <h2>Business Profile</h2>
+            <form id="profile-form">
+                <label for="first_name">First Name:</label>
+                <input type="text" id="first_name" name="first_name">
+
+                <label for="last_name">Last Name:</label>
+                <input type="text" id="last_name" name="last_name">
+
+                <label for="business_name">Business Name:</label>
+                <input type="text" id="business_name" name="business_name">
+
+                <label for="business_location">Business Location:</label>
+                <input type="text" id="business_location" name="business_location">
+
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email">
+
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password">
+
+                <label for="logo">Business Logo:</label>
+                <input type="file" id="logo" name="logo" accept="image/*">
+
+                <label for="phone_number">Phone Number:</label>
+                <input type="text" id="phone_number" name="phone_number">
+
+                <h3>Payment Options</h3>
+                <div id="payment-options">
+                    <label class="payment-option-label"><input type="checkbox" name="payment_options" value="pochi">Pochi la Biashara</label>
+                    <input type="text" id="pochi_number" name="pochi_number" placeholder="Pochi Number" class="payment-number hidden">
+
+                    <label class="payment-option-label"><input type="checkbox" name="payment_options" value="buy_goods">Buy Goods and Services</label>
+                    <input type="text" id="buy_goods_number" name="buy_goods_number" placeholder="Till Number" class="payment-number hidden">
+
+                    <label class="payment-option-label"><input type="checkbox" name="payment_options" value="paybill">Paybill</label>
+                    <input type="text" id="paybill_business_number" name="paybill_business_number" placeholder="Business Number" class="payment-number hidden">
+                    <input type="text" id="paybill_account_number" name="paybill_account_number" placeholder="Account Number" class="payment-number hidden">
+
+                    <label class="payment-option-label"><input type="checkbox" name="payment_options" value="send_money">Send Money</label>
+                    <input type="text" id="send_money_number" name="send_money_number" placeholder="Phone Number" class="payment-number hidden">
+
+                    <label class="payment-option-label"><input type="checkbox" name="payment_options" value="cod">Pay on Delivery</label>
+                </div>
+
+                <button type="submit">Update Profile</button>
+            </form>
+        </section>
+
+        <section id="menu-section">
+            <h2>Manage Menu</h2>
+            <div id="menu-items">
+                <table id="menu-table">
+                    <thead>
+                        <tr>
+                            <th>Item Name</th>
+                            <th>Description</th>
+                            <th>Price</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        </tbody>
+                </table>
+            </div>
+            <button id="add-item-button">Add Item</button>
+
+            <div id="add-item-form" class="hidden">
+                <h3>Add New Item</h3>
+                <input type="text" id="new-item-name" placeholder="Item Name">
+                <input type="text" id="new-item-description" placeholder="Description">
+                <input type="number" id="new-item-price" placeholder="Price">
+                <button id="save-item-button">Save Item</button>
+            </div>
+        </section>
+
+        <section id="orders-section" class="hidden">
+            <h2>Orders of the Day</h2>
+            <div id="orders-list">
+                </div>
+        </section>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 QuickServe. All rights reserved.</p>
+    </footer>
+
+    <script src="/frontend/index/Business Owner Pages/business-dashboard.js"></script>
+</body>
+</html>

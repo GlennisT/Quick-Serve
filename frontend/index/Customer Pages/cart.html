@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>QuickServe - Your Cart</title>
+    <link rel="stylesheet" href="/frontend/index/Customer Pages/cart.css">
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <h1>QuickServe</h1>
+            <div class="logo">
+                <img src="/images/logo.png" alt="QuickServe Logo">
+            </div>
+            <nav>
+                <a href="/frontend/index/Customer Pages/customer-dashboard.html">Dashboard</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <h2>Your Cart</h2>
+        <div id="cart-items">
+            </div>
+
+        <div id="address-payment" class="hidden">
+            <h3>Delivery Address</h3>
+            <input type="text" id="first_name" placeholder="First Name">
+            <input type="text" id="building_name" placeholder="Building Name">
+            <input type="text" id="house_number" placeholder="House Number">
+            <input type="text" id="street" placeholder="Street">
+
+            <h3>Payment Method</h3>
+            <select id="payment-method">
+                <option value="cod">Pay on Delivery</option>
+                <option value="mpesa">M-Pesa</option>
+            </select>
+            <button id="confirm-address-payment">Confirm</button>
+        </div>
+
+        <button id="checkout-button">Checkout</button>
+
+        <div id="order-tracking" class="hidden">
+            <h3>Order Tracking</h3>
+            <p>Order ID: <span id="order-id"></span></p>
+            <p>Status: <span id="order-status"></span></p>
+            <p>Timestamp: <span id="order-timestamp"></span></p>
+            <p>Address: <span id="order-address"></span></p>
+            <p>Payment: <span id="order-payment"></span></p>
+            <button id="mark-delivered">Mark as Delivered</button>
+        </div>
+
+        <div id="review-feedback" class="hidden">
+            <h3>Review & Feedback</h3>
+            <textarea id="review-text" placeholder="Leave your review and feedback"></textarea>
+            <input type="file" id="review-image">
+            <button id="submit-review">Submit Review</button>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 QuickServe. All rights reserved.</p>
+    </footer>
+
+    <script src="/frontend/index/Customer Pages/cart.js"></script>
+</body>
+</html>

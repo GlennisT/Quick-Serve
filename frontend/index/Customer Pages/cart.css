@@ -1,0 +1,97 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('/images/food5.jpg') no-repeat center center fixed;
+    background-size: cover;
+    color: #fff;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+header {
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 5px 0; /* Reduced padding */
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 10px; /* Reduced padding */
+}
+
+.logo img {
+    max-width: 150px; /* Reduced max-width */
+    height: auto;
+}
+
+nav a {
+    margin-left: 10px; /* Reduced margin */
+    text-decoration: none;
+    color: pink;
+}
+.container {
+    width: 80%;
+    max-width: 800px;
+    margin: 20px auto;
+    background-color: rgba(0, 0, 0, 0.582);
+    padding: 20px;
+    border-radius: 10px;
+}
+
+h2, h3 {
+    color: pink;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#cart-items, #order-tracking, #review-feedback {
+    margin-bottom: 20px;
+}
+
+#cart-items div {
+    border-bottom: 1px solid #ddd;
+    padding: 10px 0;
+}
+
+#address-payment input, #address-payment select, #review-feedback textarea, #review-feedback input[type="file"] {
+    width: calc(100% - 22px);
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: rgba(29, 27, 27, 0.747);
+    color: #fff;
+}
+
+button {
+    background-color: pink;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    width: auto;
+    margin: 10px auto;
+    display: block;
+}
+
+button:hover {
+    background-color: rgb(245, 207, 213);
+}
+
+.hidden {
+    display: none;
+}
+
+footer {
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    text-align: center;
+    padding: 10px 0;
+    margin-top: auto;
+    width: 100%;
+}

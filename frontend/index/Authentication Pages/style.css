@@ -1,0 +1,124 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('/images/food5.jpg') no-repeat center center fixed; /* Background gradient */
+    background-size: cover;
+    color: #fff;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column; /* Allow footer to stick to bottom */
+    justify-content: center;
+    min-height: 100vh;
+}
+
+.container {
+    width: 80%;
+    max-width: 600px;
+    background-color: rgba(0, 0, 0, 0.582); /* Darker container */
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    margin: 20px auto; /* Add margin for spacing */
+}
+
+.logo {
+    position: absolute;
+    top: 0px;
+    left: 20px;
+}
+
+.logo img {
+    max-width: 270px; /* Bigger logo */
+}
+
+h1 {
+    color: pink;
+    margin-bottom: 20px;
+}
+
+.toggle-switch {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.toggle-button {
+    padding: 10px 20px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    margin: 0 5px;
+    background-color: transparent;
+    color: pink;
+}
+
+.toggle-button.active {
+    background-color: #8f0936e8;
+    border-color: #8f0936e8;
+}
+.toggle-button.hover { 
+    background-color: rgb(245, 207, 213);
+}
+
+.form-container {
+    margin-top: 20px;
+    text-align: left;
+}
+
+.form-container h2 {
+    color: #fff;
+    margin-bottom: 20px;
+}
+
+form input {
+    width: calc(100% - 22px);
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid black; /* Black input borders */
+    border-radius: 5px;
+    background-color: rgba(29, 27, 27, 0.747);
+    color: #fff;
+}
+
+form button {
+    background-color: pink;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    width: 100%;
+}
+
+form button:hover {
+    background-color: rgb(245, 207, 213);
+}
+
+a {
+    color: #007bff;
+    text-decoration: none;
+    display: block;
+    margin-top: 20px;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.hidden {
+    display: none;
+}
+
+footer {
+    background-color: rgba(0, 0, 0, 0.5); /* Darker footer */
+    color: #fff;
+    text-align: center;
+    padding: 10px 0;
+    margin-top: auto; /* Push footer to bottom */
+    width: 100%;
+}

@@ -48,10 +48,13 @@ const BusinessOwner = sequelize.define('BusinessOwner', {
         allowNull: false,
         validate: {
             isNumeric: true,
-            len: [6, 10]  // Ensures Paybill/Till number is between 6 and 10 digits
+            len: [6, 10] // Ensures Paybill/Till number is between 6 and 10 digits
         }
+    },
+    phone_number: { // Added phone_number
+        type: DataTypes.STRING(20), // Adjust length as needed
+        allowNull: true, // Or false if you want it required
     }
-    
 }, {
     timestamps: false,
     tableName: 'business_owners',
